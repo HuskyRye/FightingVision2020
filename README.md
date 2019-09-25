@@ -29,4 +29,3 @@ An open source vision software for RoboMaster2020
 * 使用 CMake 编译后 make
 * 或使用 Visual Studio 2019 或 Qt Creater 打开 CMake 项目 (通过 CMakeLists.txt )
 
-**注意: Windows 平台需在编译后将 Runtime 文件夹内的文件拷贝到可执行文件的同级目录里**
