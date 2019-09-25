@@ -8,4 +8,6 @@
 #include "Camera/FightingVideoCapture.h"
 #include "Camera/FightingCameraCapture.h"
 
+#include "SerialPort/SerialDevice.h"
+
 enum class State { ENERGY_STATE, ARMOR_STATE };

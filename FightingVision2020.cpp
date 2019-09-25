@@ -13,6 +13,7 @@ int main()
         printf("Video_source initialization failed.");
 
     // 串口接收线程
+    // SerialDevice device("COM1");
 
     // 状态机
     bool ok = true;
