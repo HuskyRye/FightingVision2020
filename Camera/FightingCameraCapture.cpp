@@ -17,8 +17,6 @@ FightingCameraCapture::~FightingCameraCapture()
         printf("DisConnect camera fail.\n");
 }
 
-cv::VideoWriter* Fightingwriter;
-
 bool FightingCameraCapture::init()
 {
     /* 发现设备 */

@@ -27,3 +27,5 @@ private:
     
     CircleQueue<cv::Mat, 3> imageQueue;
 };
+
+void grabbingCallback(const CFrame& pFrame, const void* pUser);
