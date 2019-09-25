@@ -19,12 +19,12 @@ public:
     bool init() final;
     bool read(cv::Mat& image) final;
 
-friend void grabbingCallback(const CFrame& pFrame, const void* pUser);
+    friend void grabbingCallback(const CFrame& pFrame, const void* pUser);
 
 private:
     ICameraPtr cameraSptr;
     IStreamSourcePtr streamPtr;
-    
+
     CircularQueue<cv::Mat, 3> imageQueue;
 };
 

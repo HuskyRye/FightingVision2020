@@ -1,6 +1,6 @@
 #pragma once
 
-template<class type, int length>
+template <class type, int length>
 class CircularQueue {
 private:
     type data[length];
@@ -11,15 +11,18 @@ public:
     CircularQueue<type, length>()
         : head(0)
         , tail(0) {};
-    constexpr int size() const {
+    constexpr int size() const
+    {
         return length;
     }
 
-    bool empty() const {
+    bool empty() const
+    {
         return head == tail;
     }
 
-    void push(const type& obj) {
+    void push(const type& obj)
+    {
         data[head] = obj;
         head = (head + 1) % length;
         if (head == tail) {
@@ -27,7 +30,8 @@ public:
         }
     }
 
-    bool pop(type& obj) {
+    bool pop(type& obj)
+    {
         if (empty())
             return false;
         obj = data[tail];
