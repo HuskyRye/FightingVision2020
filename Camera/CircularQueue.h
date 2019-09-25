@@ -1,14 +1,14 @@
 #pragma once
 
 template<class type, int length>
-class CircleQueue {
+class CircularQueue {
 private:
     type data[length];
     int head;
     int tail;
 
 public:
-    CircleQueue<type, length>()
+    CircularQueue<type, length>()
         : head(0)
         , tail(0) {};
     constexpr int size() const {

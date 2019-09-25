@@ -2,7 +2,7 @@
 
 #include "FightingCapture.h"
 
-#include "CircleQueue.h"
+#include "CircularQueue.h"
 
 #include "GenICam/Camera.h"
 #include "GenICam/System.h"
@@ -25,7 +25,7 @@ private:
     ICameraPtr cameraSptr;
     IStreamSourcePtr streamPtr;
     
-    CircleQueue<cv::Mat, 3> imageQueue;
+    CircularQueue<cv::Mat, 3> imageQueue;
 };
 
 void grabbingCallback(const CFrame& pFrame, const void* pUser);
