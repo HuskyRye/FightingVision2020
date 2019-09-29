@@ -41,11 +41,11 @@ int SerialPort::Write(const uint8_t* buf, int len)
 bool SerialPort::OpenDevice()
 {
     /* 打开串口 */
-    hComm = CreateFileA(port_name_, // 串口名称
-        GENERIC_READ | GENERIC_WRITE, // 允许读写
-        0, // 独占访问
-        NULL, // 默认安全
-        OPEN_EXISTING, // 仅打开存在
+    hComm = CreateFileA(port_name_,     // 串口名称
+        GENERIC_READ | GENERIC_WRITE,   // 允许读写
+        0,                              // 独占访问
+        NULL,                           // 默认安全
+        OPEN_EXISTING,                  // 仅打开存在
         0,
         NULL);
     return hComm != INVALID_HANDLE_VALUE;
