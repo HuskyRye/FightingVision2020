@@ -10,10 +10,13 @@ int main()
     // capture = new FightingVideoCapture("D:\\VLOG\\中秋\\C0007.MP4");
     capture = new FightingCameraCapture();
     if (!capture->init())
-        printf("Video_source initialization failed.");
+        printf("Video_source initialization failed.\n");
 
     // 串口接收线程
-    // SerialDevice device("COM1");
+    
+    SerialPort device("COM1");
+    if (!device.Init())
+        printf("Serial device initialization failed.\n");
 
     // 状态机
     bool ok = true;

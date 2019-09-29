@@ -11,7 +11,8 @@ SET(SRC
     "FightingVision2020.h"
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingCameraCapture.cpp"
-	"SerialPort/SerialDevice.cpp"
+	"SerialPort/SerialPort.cpp"
+	"SerialPort/Protocol.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})
