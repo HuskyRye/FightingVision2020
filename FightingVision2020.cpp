@@ -3,6 +3,16 @@
 
 using namespace std;
 
+void uartReceive(SerialPort* uart)
+{
+    uint8_t buf[4096];
+    while (true) {
+        memset(buf, 0, sizeof(buf));
+        uart->Read(buf, 4096);
+        printf("%s", buf);
+    }
+}
+
 int main()
 {
     // 相机初始化
@@ -13,10 +23,17 @@ int main()
         printf("Video_source initialization failed.\n");
 
     // 串口接收线程
-    
     SerialPort device("COM1");
     if (!device.Init())
         printf("Serial device initialization failed.\n");
+
+    /* 串口测试 */
+    thread receive(uartReceive, &device);
+    const uint8_t buf[] = "Hello world!\n";
+    while (true) {
+        device.Write(buf, sizeof(buf));
+        Sleep(1000);
+    }
 
     // 状态机
     bool ok = true;

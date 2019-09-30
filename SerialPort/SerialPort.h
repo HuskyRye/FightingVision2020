@@ -2,15 +2,22 @@
 
 #include <iostream>
 #include <string>
+
+#ifdef Windows
 #include <Windows.h>
+#elif defined Linux
+#include <termios.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif
 
 class SerialPort {
 public:
-    SerialPort(LPCTSTR port_name);
+    SerialPort(const char* port_name);
     ~SerialPort();
 
     bool Init();
-    int Read();
+    int Read(uint8_t* buf, int len);
     int Write(const uint8_t* buf, int len);
 
 private:
@@ -18,10 +25,17 @@ private:
     bool CloseDevice();
     bool ConfigDevice();
 
+#ifdef Windows
     HANDLE hComm;
-    LPCTSTR port_name_;
-    DWORD baudrate_;
-    BYTE stop_bits_;
-    BYTE data_bits_;
-    BYTE parity_bits_;
+#elif defined Linux
+    int serial_fd_;
+#endif
+
+    const char* port_name_;
+    unsigned long baudrate_;
+    unsigned char stop_bits_;
+    unsigned char data_bits_;
+    unsigned char parity_bits_;
 };
+
+
