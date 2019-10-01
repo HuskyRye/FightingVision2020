@@ -55,7 +55,7 @@ bool FightingCameraCapture::init()
     nodeWidth.setValue(640);
     nodeHeight.setValue(480);
     nodeExposureAuto.setValue(0);
-    nodeExposureTime.setValue(2500);
+    nodeExposureTime.setValue(9000);
     nodeFrameRate.setValue(210);
     nodeBrightness.setValue(50);
     nodeGamma.setValue(1);

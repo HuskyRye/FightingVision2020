@@ -27,18 +27,20 @@ int main()
     if (!device.Init())
         printf("Serial device initialization failed.\n");
 
-    /* 串口测试 */
+    /* 串口测试 
     thread receive(uartReceive, &device);
     const uint8_t buf[] = "Hello world!\n";
     while (true) {
         device.Write(buf, sizeof(buf));
         Sleep(1000);
-    }
+    }*/
 
     // 状态机
     bool ok = true;
     State current_state = State::ARMOR_STATE;
     State last_state = State::ARMOR_STATE;
+
+    ArmorDetector detector;
 
     cv::Mat src;
     while (ok) {
@@ -57,6 +59,8 @@ int main()
             }
             if (capture->read(src)) {
                 // 自瞄
+                cv::Point3f target_3d;
+                detector.DetectArmor(src, target_3d);
                 cv::imshow("armor src", src);
                 cv::waitKey(1);
             }

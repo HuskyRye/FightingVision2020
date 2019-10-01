@@ -3,6 +3,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${CMAKE_SYSTEM_NAME}")
+set(CMAKE_PREFIX_PATH "C:/opencv/build/")
 
 find_package(OpenCV REQUIRED)
 
@@ -16,6 +17,7 @@ set(SRC
 	"SerialPort/Protocol.cpp"
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingCameraCapture.cpp"
+	"Armor/ArmorDetector.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})

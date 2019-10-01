@@ -10,4 +10,6 @@
 
 #include "SerialPort/SerialPort.h"
 
+#include "Armor/ArmorDetector.h"
+
 enum class State { ENERGY_STATE, ARMOR_STATE };
