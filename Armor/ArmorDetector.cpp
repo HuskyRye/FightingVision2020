@@ -10,10 +10,15 @@ ArmorDetector::ArmorDetector()
     enable_debug = true;
 
     color_thresh = 230;
-    blue_thresh = 90;
+    blue_thresh = 50;
     red_thresh = 50;
 
-    max_angle_diff = 10;
+    light_min_area = 50;
+
+    armor_max_angle_diff = 15;
+    armor_max_aspect_ratio = 6;
+    armor_max_height_ratio = 2;
+    armor_min_area = 200;
 }
 
 ArmorDetector::~ArmorDetector()
@@ -41,11 +46,16 @@ void ArmorDetector::SearchArmor(const cv::Mat& src)
         armors_befor_filter = src.clone();
         armors_after_filter = src.clone();
     }
+    double start = static_cast<double>(cv::getTickCount());
+
     std::vector<cv::RotatedRect> lights;
     DetectLights(src, lights);
 
     std::vector<ArmorInfo> armors;
     PossibleArmors(lights, armors);
+
+    double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
+    std::cout << "\ntime: " << time;
 }
 
 void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights)
@@ -80,7 +90,7 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
                 cv::RotatedRect single_light = cv::minAreaRect(contours_brightness[i]);
                 /* Filter Lights */
                 cv::Rect bounding_rect = single_light.boundingRect();
-                if (bounding_rect.height < bounding_rect.width)
+                if (bounding_rect.height < bounding_rect.width || single_light.size.area() < light_min_area)
                     break;
                 lights.push_back(single_light);
                 if (enable_debug)
@@ -91,9 +101,11 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
     }
     if (enable_debug) {
         cv::imshow("lights_before_filter", detect_lights);
+        /*
         auto c = cv::waitKey(1);
         if (c == 'a')
             cv::waitKey(0);
+        */
     }
 }
 
@@ -132,26 +144,53 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
             cv::RotatedRect light2 = lights[j];
             auto edge1 = std::minmax(light1.size.width, light1.size.height);
             auto edge2 = std::minmax(light2.size.width, light2.size.height);
-            float light1_angle = (light1.angle < -45) ? light1.angle + 90 : light1.angle;
-            float light2_angle = (light2.angle < -45) ? light2.angle + 90 : light2.angle;
-            float angle_diff = std::abs(light1.angle - light2.angle);
-            if (angle_diff < max_angle_diff) {
-                cv::RotatedRect rect;
-                double center_angle = (double)std::atan((lights[i].center.y - lights[j].center.y) / (lights[i].center.x - lights[j].center.x)) * 180 / CV_PI;
-                rect.angle = static_cast<float>(center_angle);
-                rect.center = (light1.center + light2.center) / 2;
-                rect.size.width = std::sqrt((lights[i].center.x - lights[j].center.x) * (lights[i].center.x - lights[j].center.x) + (lights[i].center.y - lights[j].center.y) * (lights[i].center.y - lights[j].center.y));
-                rect.size.height = std::max<float>(edge1.second, edge2.second);
-                DrawRotatedRect(armors_befor_filter, rect, cv::Scalar(0, 255, 0), 2);
-
+            float light1_angle = (light1.angle <= -45.0) ? light1.angle + 90 : light1.angle;
+            float light2_angle = (light2.angle <= -45.0) ? light2.angle + 90 : light2.angle;
+            float angle_diff = std::abs(light1_angle - light2_angle);
+            double center_angle = (double)std::atan((lights[i].center.y - lights[j].center.y) / (lights[i].center.x - lights[j].center.x)) * 180 / CV_PI;
+            cv::RotatedRect rect;
+            rect.angle = static_cast<float>(center_angle);
+            rect.center = (light1.center + light2.center) / 2;
+            rect.size.width = std::sqrt((lights[i].center.x - lights[j].center.x) * (lights[i].center.x - lights[j].center.x) + (lights[i].center.y - lights[j].center.y) * (lights[i].center.y - lights[j].center.y));
+            rect.size.height = std::max<float>(edge1.second, edge2.second);
+            auto height = std::minmax(edge1.second, edge2.second);
+            if (enable_debug) {
+                std::cout << "\ncenter_angle = " << center_angle;
+                std::cout << "\nlight1_angle = " << light1_angle;
+                std::cout << "\nlight2_angle = " << light2_angle;
+                std::cout << "\nangle_diff = " << angle_diff;
+                std::cout << "\nrect_angle = " << rect.angle;
+                std::cout << "\nrect_width = " << rect.size.width;
+                std::cout << "\nrect_height = " << rect.size.height;
+                std::cout << "\nwidth/height = " << rect.size.width / rect.size.height;
+                std::cout << "\nedge1.first = " << edge1.first;
+                std::cout << "\nedge2.first = " << edge2.first;
+                std::cout << "\nedge1.second = " << edge1.second;
+                std::cout << "\nedge2.second = " << edge2.second;
+                std::cout << "\nheight1/height2 = " << height.second / height.first << '\n';
+                std::cout << "\nrect.area = " << rect.size.area();
+            }
+            if (angle_diff < armor_max_angle_diff
+                && std::max(abs(center_angle - light1_angle), abs(center_angle - light2_angle)) < armor_max_angle_diff
+                && (rect.size.width / rect.size.height) < armor_max_aspect_ratio
+                && (height.second / height.first) < armor_max_height_ratio
+                && rect.size.area() > armor_min_area) {
+                if (enable_debug)
+                    DrawRotatedRect(armors_befor_filter, rect, cv::Scalar(0, 255, 0), 2);
+                /*
 				std::vector<cv::Point2f> armor_points;
                 if (light1.center.x < light2.center.x)
                     CalcArmorInfo(armor_points, light1, light2);
                 else
                     CalcArmorInfo(armor_points, light2, light1);
+                */
             }
         }
     }
-    if (enable_debug)
+    if (enable_debug) {
         cv::imshow("armors_before_filter", armors_befor_filter);
+        auto c = cv::waitKey(1);
+        if (c == 'a')
+            cv::waitKey(0);
+    }
 }

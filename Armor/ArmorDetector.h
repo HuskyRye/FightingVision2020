@@ -24,6 +24,7 @@ private:
 
     float color_thresh;
     float blue_thresh, red_thresh;
+    float light_min_area;
     void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
     cv::Mat DistillationColor(const cv::Mat& src);
     void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
@@ -42,6 +43,11 @@ private:
         std::vector<cv::Point2f> vertex;
         float stddev;
     };
-    float max_angle_diff;
+
+    float armor_max_angle_diff;
+    float armor_max_aspect_ratio;
+    float armor_max_height_ratio;
+    float armor_min_area;
+    
     void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
 };
