@@ -6,7 +6,14 @@ using namespace Dahua::Infra;
 
 FightingCameraCapture::FightingCameraCapture()
 {
-    // 设置状态、参数与模式(if needed)
+    // TODO: 从文件读取相机配置
+    width = 640;
+    height = 480;
+    exposure_auto = false;
+    exposure_time = 9000;
+    frame_rate = 210;
+    brightness = 50;
+    gamma = 1;
 }
 
 FightingCameraCapture::~FightingCameraCapture()
@@ -52,13 +59,13 @@ bool FightingCameraCapture::init()
     CDoubleNode nodeGamma = sptrAnalogControl->gamma();
 
     // 设置属性值
-    nodeWidth.setValue(640);
-    nodeHeight.setValue(480);
-    nodeExposureAuto.setValue(0);
-    nodeExposureTime.setValue(9000);
-    nodeFrameRate.setValue(210);
-    nodeBrightness.setValue(50);
-    nodeGamma.setValue(1);
+    nodeWidth.setValue(width);
+    nodeHeight.setValue(height);
+    nodeExposureAuto.setValue(exposure_auto);
+    nodeExposureTime.setValue(exposure_time);
+    nodeFrameRate.setValue(frame_rate);
+    nodeBrightness.setValue(brightness);
+    nodeGamma.setValue(gamma);
 
     /* 创建流对象 */
     streamPtr = systemObj.createStreamSource(cameraSptr);

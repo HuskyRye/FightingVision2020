@@ -50,13 +50,13 @@ private:
     float armor_max_aspect_ratio;
     float armor_max_height_ratio;
     float armor_min_area;
-
     void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
     void CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::RotatedRect left_light, cv::RotatedRect right_light);
-
     void FilterArmors(std::vector<ArmorInfo>& armors);
-
     ArmorInfo SelectFinalArmor(std::vector<ArmorInfo>& armors);
-    /* calc(armor, ControlInfo) */
-    // void CalcControlInfo(const ArmorInfo& armor);
+    
+    cv::Mat camera_matrix, distortion_coeffs;
+    float small_armor_width, small_armor_height, big_armor_width, big_armor_height;
+    std::vector<cv::Point3f> small_armor_points, big_armor_points;
+    void CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target_3d);
 };

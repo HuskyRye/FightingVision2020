@@ -7,18 +7,44 @@ ArmorDetector::ArmorDetector()
     enemy_color = EnemyColor::BLUE;
 
     // TODO: 从文件读取参数
+    // DEBUG
     enable_debug = true;
 
+    // DetectLights
     color_thresh = 230;
     blue_thresh = 50;
     red_thresh = 50;
-
     light_min_area = 50;
 
+    // PossibleArmors
     armor_max_angle_diff = 15;
     armor_max_aspect_ratio = 6;
     armor_max_height_ratio = 2;
     armor_min_area = 200;
+
+    // Camera
+    camera_matrix = cv::Mat(3, 3, CV_64F);
+    distortion_coeffs = cv::Mat(5, 1, CV_64F);
+
+    small_armor_width = 128;
+    small_armor_height = 45;
+    big_armor_width = 225;
+    big_armor_height = 45;
+
+    float half_small_armor_width = small_armor_width / 2;
+    float half_small_armor_height = small_armor_height / 2;
+    float half_big_armor_width = big_armor_width / 2;
+    float half_big_armor_height = big_armor_height / 2;
+
+    small_armor_points.emplace_back(cv::Point3f(-half_small_armor_width, half_small_armor_height, 0.0)); // left down
+    small_armor_points.emplace_back(cv::Point3f(half_small_armor_width, half_small_armor_height, 0.0)); // right down
+    small_armor_points.emplace_back(cv::Point3f(half_small_armor_width, -half_small_armor_height, 0.0)); // right up
+    small_armor_points.emplace_back(cv::Point3f(-half_small_armor_width, -half_small_armor_height, 0.0)); // left up
+
+    big_armor_points.emplace_back(cv::Point3f(-half_big_armor_width, half_big_armor_height, 0.0)); // left down
+    big_armor_points.emplace_back(cv::Point3f(half_big_armor_width, half_big_armor_height, 0.0)); // right down
+    big_armor_points.emplace_back(cv::Point3f(half_big_armor_width, -half_big_armor_height, 0.0)); // right up
+    big_armor_points.emplace_back(cv::Point3f(-half_big_armor_width, -half_big_armor_height, 0.0)); // left up
 }
 
 ArmorDetector::~ArmorDetector()
@@ -64,7 +90,6 @@ bool ArmorDetector::SearchArmor(const cv::Mat& src)
 
     double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
     std::cout << "\ntime: " << time;
-    
 }
 
 void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights)
@@ -132,13 +157,6 @@ cv::Mat ArmorDetector::DistillationColor(const cv::Mat& src)
 
 void ArmorDetector::DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness)
 {
-    /* put Text on image
-    std::ostringstream oss;
-    int test_value = your_value_here;
-    oss << test_value;
-    cv::String text(oss.str());
-    cv::putText(image, text, rect.center, cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 100, 0), thickness, cv::LINE_AA);
-    */
     cv::Point2f vertices[4];
     rect.points(vertices);
     for (int i = 0; i < 4; i++)
@@ -186,7 +204,7 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
                 && rect.size.area() > armor_min_area) {
                 if (enable_debug)
                     DrawRotatedRect(armors_before_filter, rect, cv::Scalar(0, 255, 0), 2);
-				std::vector<cv::Point2f> armor_points;
+                std::vector<cv::Point2f> armor_points;
                 if (light1.center.x < light2.center.x)
                     CalcArmorInfo(armor_points, light1, light2);
                 else
@@ -212,16 +230,15 @@ void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::Ro
     cv::Point2f left_down, left_up, right_up, right_down;
     std::sort(left_points, left_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
     std::sort(right_points, right_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
-    
     left_down = (left_points[2].x > left_points[3].x) ? left_points[2] : left_points[3];
     left_up = (left_points[0].x > left_points[1].x) ? left_points[0] : left_points[1];
     right_up = (right_points[0].x < right_points[1].x) ? right_points[0] : right_points[1];
     right_down = (right_points[2].x < right_points[3].x) ? right_points[2] : right_points[3];
 
     armor_points.push_back(left_down);
-    armor_points.push_back(left_up);
-    armor_points.push_back(right_up);
     armor_points.push_back(right_down);
+    armor_points.push_back(right_up);
+    armor_points.push_back(left_up);
 }
 
 void ArmorDetector::FilterArmors(std::vector<ArmorInfo>& armors)
@@ -237,4 +254,34 @@ ArmorInfo ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
     return armors[0];
 
     // TODO: 根据 classifier 的值进行选择
+}
+
+void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
+{
+    cv::Mat rvec, tvec;
+    // TODO: test the distortion and intrinsic_matrix of the camera
+    if (armor.rect.size.width / armor.rect.size.height < 4)
+        cv::solvePnP(small_armor_points, armor.vertex, camera_matrix, distortion_coeffs, rvec, tvec);
+    else
+        cv::solvePnP(big_armor_points, armor.vertex, camera_matrix, distortion_coeffs, rvec, tvec);
+    cv::Mat rmat(3, 3, CV_64F);
+    cv::Rodrigues(rvec, rmat);
+    double x = tvec.at<double>(0);
+    double y = tvec.at<double>(1);
+    double z = tvec.at<double>(2);
+    float dist = static_cast<float>(sqrt(x * x + y * y + z * z));
+
+    double r11 = rmat.at<double>(0, 0);
+    double r21 = rmat.at<double>(1, 0);
+    double r31 = rmat.at<double>(2, 0);
+    double r32 = rmat.at<double>(2, 1);
+    double r33 = rmat.at<double>(2, 2);
+
+    float theta_z = atan2(r21, r11) * 180 / CV_PI;
+    float theta_y = atan2(-r31, sqrt(r32 * r32 + r33 * r33)) * 180 / CV_PI;
+    float theta_x = atan2(r32, r33) * 180 / CV_PI;
+
+    float yaw_offset = 0;
+    float pitch_offset = 0;
+    target = cv::Point3f(yaw_offset, pitch_offset, dist);
 }

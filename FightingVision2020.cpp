@@ -36,14 +36,13 @@ int main()
     }*/
 
     // 状态机
-    bool ok = true;
     State current_state = State::ARMOR_STATE;
     State last_state = State::ARMOR_STATE;
 
     ArmorDetector detector;
 
     cv::Mat src;
-    while (ok) {
+    while (true) {
         if (current_state == State::ENERGY_STATE) { // 能量机关状态
             if (last_state == State::ARMOR_STATE) {
                 //  对相机参数进行修改或重启相机

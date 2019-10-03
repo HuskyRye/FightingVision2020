@@ -5,8 +5,8 @@
 #include "CircularQueue.h"
 
 #include "GenICam/Camera.h"
-#include "GenICam/System.h"
 #include "GenICam/StreamSource.h"
+#include "GenICam/System.h"
 #include "ImageConvert.h"
 
 using namespace Dahua::GenICam;
@@ -26,6 +26,14 @@ private:
     IStreamSourcePtr streamPtr;
 
     CircularQueue<cv::Mat, 3> imageQueue;
+
+    int width;
+    int height;
+    bool exposure_auto;
+    double exposure_time;
+    double frame_rate;
+    int brightness;
+    double gamma;
 };
 
 void grabbingCallback(const CFrame& pFrame, const void* pUser);
