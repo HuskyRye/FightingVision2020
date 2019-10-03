@@ -2,6 +2,22 @@
 
 #include "opencv2/opencv.hpp"
 
+class ArmorInfo {
+public:
+    ArmorInfo(cv::RotatedRect armor_rect, std::vector<cv::Point2f> armor_vertex, float armor_stddev = 0.0)
+        : rect(armor_rect)
+        , vertex(armor_vertex)
+        , stddev(armor_stddev)
+    {
+    }
+
+public:
+    cv::RotatedRect rect;
+    std::vector<cv::Point2f> vertex;
+    float stddev;
+    // TODO: classifier ‰≥ˆ÷µ
+};
+
 class ArmorDetector {
 public:
     ArmorDetector();
@@ -14,13 +30,14 @@ private:
         TRACKING_STATE };
     State state;
 
-    enum class EnemyColor { RED, BLUE };
+    enum class EnemyColor { RED,
+        BLUE };
     EnemyColor enemy_color;
 
     cv::Mat detect_lights;
-    cv::Mat armors_befor_filter;
+    cv::Mat armors_before_filter;
     cv::Mat armors_after_filter;
-    void SearchArmor(const cv::Mat& src);
+    bool SearchArmor(const cv::Mat& src);
 
     float color_thresh;
     float blue_thresh, red_thresh;
@@ -29,25 +46,17 @@ private:
     cv::Mat DistillationColor(const cv::Mat& src);
     void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
 
-    class ArmorInfo {
-    public:
-        ArmorInfo(cv::RotatedRect armor_rect, std::vector<cv::Point2f> armor_vertex, float armor_stddev = 0.0)
-        {
-            rect = armor_rect;
-            vertex = armor_vertex;
-            stddev = armor_stddev;
-        }
-
-    public:
-        cv::RotatedRect rect;
-        std::vector<cv::Point2f> vertex;
-        float stddev;
-    };
-
     float armor_max_angle_diff;
     float armor_max_aspect_ratio;
     float armor_max_height_ratio;
     float armor_min_area;
-    
+
     void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
+    void CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::RotatedRect left_light, cv::RotatedRect right_light);
+
+    void FilterArmors(std::vector<ArmorInfo>& armors);
+
+    ArmorInfo SelectFinalArmor(std::vector<ArmorInfo>& armors);
+    /* calc(armor, ControlInfo) */
+    // void CalcControlInfo(const ArmorInfo& armor);
 };

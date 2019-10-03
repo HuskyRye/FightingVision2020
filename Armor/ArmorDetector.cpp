@@ -39,11 +39,11 @@ void ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target_3d)
     }
 }
 
-void ArmorDetector::SearchArmor(const cv::Mat& src)
+bool ArmorDetector::SearchArmor(const cv::Mat& src)
 {
     if (enable_debug) {
         detect_lights = src.clone();
-        armors_befor_filter = src.clone();
+        armors_before_filter = src.clone();
         armors_after_filter = src.clone();
     }
     double start = static_cast<double>(cv::getTickCount());
@@ -54,8 +54,17 @@ void ArmorDetector::SearchArmor(const cv::Mat& src)
     std::vector<ArmorInfo> armors;
     PossibleArmors(lights, armors);
 
+    FilterArmors(armors);
+    if (!armors.empty()) {
+        ArmorInfo final_armor = SelectFinalArmor(armors);
+        // CalcControlInfo(final_armor);
+        // TODO: Create Tracker?
+        return true;
+    }
+
     double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
     std::cout << "\ntime: " << time;
+    
 }
 
 void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights)
@@ -125,8 +134,8 @@ void ArmorDetector::DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect&
 {
     /* put Text on image
     std::ostringstream oss;
-    int rect_angle = (rect.angle < -45) ? rect.angle + 90 : rect.angle;
-    oss << rect_angle;
+    int test_value = your_value_here;
+    oss << test_value;
     cv::String text(oss.str());
     cv::putText(image, text, rect.center, cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 100, 0), thickness, cv::LINE_AA);
     */
@@ -176,21 +185,56 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
                 && (height.second / height.first) < armor_max_height_ratio
                 && rect.size.area() > armor_min_area) {
                 if (enable_debug)
-                    DrawRotatedRect(armors_befor_filter, rect, cv::Scalar(0, 255, 0), 2);
-                /*
+                    DrawRotatedRect(armors_before_filter, rect, cv::Scalar(0, 255, 0), 2);
 				std::vector<cv::Point2f> armor_points;
                 if (light1.center.x < light2.center.x)
                     CalcArmorInfo(armor_points, light1, light2);
                 else
                     CalcArmorInfo(armor_points, light2, light1);
-                */
+                armors.emplace_back(ArmorInfo(rect, armor_points));
             }
         }
     }
     if (enable_debug) {
-        cv::imshow("armors_before_filter", armors_befor_filter);
+        cv::imshow("armors_before_filter", armors_before_filter);
         auto c = cv::waitKey(1);
         if (c == 'a')
             cv::waitKey(0);
     }
+}
+
+void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::RotatedRect left_light, cv::RotatedRect right_light)
+{
+    cv::Point2f left_points[4], right_points[4];
+    left_light.points(left_points);
+    right_light.points(right_points);
+
+    cv::Point2f left_down, left_up, right_up, right_down;
+    std::sort(left_points, left_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
+    std::sort(right_points, right_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
+    
+    left_down = (left_points[2].x > left_points[3].x) ? left_points[2] : left_points[3];
+    left_up = (left_points[0].x > left_points[1].x) ? left_points[0] : left_points[1];
+    right_up = (right_points[0].x < right_points[1].x) ? right_points[0] : right_points[1];
+    right_down = (right_points[2].x < right_points[3].x) ? right_points[2] : right_points[3];
+
+    armor_points.push_back(left_down);
+    armor_points.push_back(left_up);
+    armor_points.push_back(right_up);
+    armor_points.push_back(right_down);
+}
+
+void ArmorDetector::FilterArmors(std::vector<ArmorInfo>& armors)
+{
+    // TODO: Non-Maximum Suppression
+    // TODO: Classifier
+}
+
+ArmorInfo ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
+{
+    std::sort(armors.begin(), armors.end(),
+        [](const ArmorInfo& p1, const ArmorInfo& p2) { return p1.rect.size.area() > p2.rect.size.area(); });
+    return armors[0];
+
+    // TODO: 根据 classifier 的值进行选择
 }
