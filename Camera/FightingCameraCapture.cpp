@@ -7,8 +7,8 @@ using namespace Dahua::Infra;
 FightingCameraCapture::FightingCameraCapture()
 {
     // TODO: 从文件读取相机配置
-    width = 1280;
-    height = 1024;
+    width = 640;
+    height = 480;
     exposure_auto = false;
     exposure_time = 9000;
     frame_rate = 210;

@@ -198,7 +198,8 @@ int ChArUcoCalibration(int argc, char* argv[])
         // inputVideo.open(camId);
         waitTime = 10;
     }
-    FightingCameraCapture inputVideo;
+    // FightingCameraCapture inputVideo;
+    FightingSimpleCapture inputVideo(1);
     inputVideo.init();
 
     Ptr<aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::PREDEFINED_DICTIONARY_NAME(dictionaryId));
@@ -214,7 +215,7 @@ int ChArUcoCalibration(int argc, char* argv[])
     Size imgSize;
 
     Mat image;
-    while (inputVideo.grab(image)) {
+    while (inputVideo.read(image)) {
         Mat imageCopy;
         // inputVideo.retrieve(image);
 

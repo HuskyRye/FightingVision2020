@@ -37,7 +37,7 @@ private:
     cv::Mat detect_lights;
     cv::Mat armors_before_filter;
     cv::Mat armors_after_filter;
-    bool SearchArmor(const cv::Mat& src);
+    bool SearchArmor(const cv::Mat& src, cv::Point3f& target_3d);
 
     float color_thresh;
     float blue_thresh, red_thresh;
