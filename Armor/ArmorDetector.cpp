@@ -23,8 +23,10 @@ ArmorDetector::ArmorDetector()
     armor_min_area = 200;
 
     // Camera
-    camera_matrix = cv::Mat(3, 3, CV_64F);
-    distortion_coeffs = cv::Mat(5, 1, CV_64F);
+    double camera_m[9] = { 1745.86173683508, 0, 662.18119817513, 0, 1747.84123649139, 453.89956107988, 0, 0, 1 };
+    camera_matrix = cv::Mat(3, 3, CV_64F, camera_m);
+    double camera_d[5] = { 0.00779612314, 0.08290683074, -0.00177829643, 0.00336206233, -1.69370174590 };
+    distortion_coeffs = cv::Mat(5, 1, CV_64F, camera_d);
 
     small_armor_width = 128;
     small_armor_height = 45;
@@ -269,7 +271,8 @@ void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
     double x = tvec.at<double>(0);
     double y = tvec.at<double>(1);
     double z = tvec.at<double>(2);
-    float dist = static_cast<float>(sqrt(x * x + y * y + z * z));
+    float distance = static_cast<float>(sqrt(x * x + y * y + z * z));
+    // TODO: 测试小孔成像原理
 
     double r11 = rmat.at<double>(0, 0);
     double r21 = rmat.at<double>(1, 0);
@@ -283,5 +286,5 @@ void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
 
     float yaw_offset = 0;
     float pitch_offset = 0;
-    target = cv::Point3f(yaw_offset, pitch_offset, dist);
+    target = cv::Point3f(yaw_offset, pitch_offset, distance);
 }

@@ -13,8 +13,9 @@ void uartReceive(SerialPort* uart)
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    // ChArUcoCalibration(argc, argv);
     // 相机初始化
     FightingCapture* capture;
     // capture = new FightingVideoCapture("D:\\VLOG\\中秋\\C0007.MP4");

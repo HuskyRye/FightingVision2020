@@ -7,6 +7,7 @@
 #include "Camera/FightingCapture.h"
 #include "Camera/FightingVideoCapture.h"
 #include "Camera/FightingCameraCapture.h"
+#include "Camera/ChArUcoCalibration.h"
 
 #include "SerialPort/SerialPort.h"
 
