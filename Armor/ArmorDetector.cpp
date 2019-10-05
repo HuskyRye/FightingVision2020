@@ -23,16 +23,14 @@ ArmorDetector::ArmorDetector()
     armor_min_area = 200;
 
     // Camera
-    // double camera_m[9] = { 1745.86173683508, 0, 662.18119817513, 0, 1747.84123649139, 453.89956107988, 0, 0, 1 };
-    // double camera_m[9] = { 2666.7, 0, 310.7, 0, 2282.5, 284.1, 0, 0, 1 };
-    double camera_m[9] = { 2092, 0, 117, 0, 1776, 213, 0, 0, 1 };
-    camera_matrix = cv::Mat(3, 3, CV_64F, camera_m);
-    // double camera_d[5] = { 0.00779612314, 0.08290683074, -0.00177829643, 0.00336206233, -1.69370174590 };
-    // double camera_d[5] = { -1.29, 166.25, -0.04, -0.01, -3.37 };
-    double camera_d[5] = { 1.42, 90.49, 0.04, -0.44, -147.77 };
-    distortion_coeffs = cv::Mat(5, 1, CV_64F, camera_d);
+    // double camera_m[9] = { 1697.7, 0, 643, 0, 1704.3, 481.9, 0, 0, 1.0 }; // 1280*1024
+    double camera_m[9] = { 1714.4, 0, 334, 0, 1719.8, 202.4, 0, 0, 1.0 }; // 640*480
+    camera_matrix = cv::Mat(3, 3, CV_64F, camera_m).clone();
+    // double camera_d[4] = { -0.0838, 0.3175, 0, 0};  // 1280*1024
+    double camera_d[4] = { -0.0784, 0.4305, 0, 0 }; // 640*480
+    distortion_coeffs = cv::Mat(1, 4, CV_64F, camera_d).clone();
 
-    small_armor_width = 128;
+    small_armor_width = 122;
     small_armor_height = 45;
     big_armor_width = 225;
     big_armor_height = 45;
@@ -245,9 +243,9 @@ void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::Ro
     right_up = (right_points[0].x < right_points[1].x) ? right_points[0] : right_points[1];
     right_down = (right_points[2].x < right_points[3].x) ? right_points[2] : right_points[3];
 
-    armor_points.push_back(right_up);
-    armor_points.push_back(right_down);
     armor_points.push_back(left_down);
+    armor_points.push_back(right_down);
+    armor_points.push_back(right_up);
     armor_points.push_back(left_up);
 }
 
@@ -269,7 +267,6 @@ ArmorInfo ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
 void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
 {
     cv::Mat rvec, tvec;
-    // TODO: test the distortion and intrinsic_matrix of the camera
     if (armor.rect.size.width / armor.rect.size.height < 4)
         cv::solvePnP(small_armor_points, armor.vertex, camera_matrix, distortion_coeffs, rvec, tvec);
     else

@@ -17,7 +17,6 @@ set(SRC
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingCameraCapture.cpp"
 	"Camera/FightingSimpleCapture.cpp"
-	"Camera/ChArUcoCalibration.h"
 	"Armor/ArmorDetector.cpp"
 )
 

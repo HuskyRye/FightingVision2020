@@ -15,15 +15,11 @@ void uartReceive(SerialPort* uart)
 
 int main(int argc, char* argv[])
 {
-    // 标定相机
-    ChArUcoCalibration(argc, argv);
-    // FightingVision2020.exe -w=5 -h=7 -ml=0.022 -sl=0.038 -d=10 out.txt 
-
     // 相机初始化
     FightingCapture* capture;
     // capture = new FightingVideoCapture("D:\\VLOG\\中秋\\C0007.MP4");
-    // capture = new FightingCameraCapture();
-    capture = new FightingSimpleCapture(1);
+    capture = new FightingCameraCapture();
+    // capture = new FightingSimpleCapture(1);
     if (!capture->init())
         printf("Video_source initialization failed.\n");
 
