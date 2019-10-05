@@ -60,7 +60,9 @@ int main(int argc, char* argv[])
             if (capture->read(src)) {
                 // 自瞄
                 cv::Point3f target_3d;
-                detector.DetectArmor(src, target_3d);
+                if (detector.DetectArmor(src, target_3d))
+                    // sendTarget(target_3d); // 发送数据
+                    ;
                 cv::imshow("armor src", src);
                 cv::waitKey(1);
             }

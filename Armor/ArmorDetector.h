@@ -22,7 +22,7 @@ class ArmorDetector {
 public:
     ArmorDetector();
     ~ArmorDetector();
-    void DetectArmor(cv::Mat& src, cv::Point3f& target_3d);
+    bool DetectArmor(cv::Mat& src, cv::Point3f& target_3d);
 
 private:
     bool enable_debug;

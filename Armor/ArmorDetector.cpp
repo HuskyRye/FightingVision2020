@@ -11,10 +11,10 @@ ArmorDetector::ArmorDetector()
     enable_debug = true;
 
     // DetectLights
-    color_thresh = 230;
+    color_thresh = 200;
     blue_thresh = 50;
     red_thresh = 50;
-    light_min_area = 50;
+    light_min_area = 1;
 
     // PossibleArmors
     armor_max_angle_diff = 15;
@@ -22,12 +22,12 @@ ArmorDetector::ArmorDetector()
     armor_max_height_ratio = 2;
     armor_min_area = 200;
 
-    // Camera
-    // double camera_m[9] = { 1697.7, 0, 643, 0, 1704.3, 481.9, 0, 0, 1.0 }; // 1280*1024
-    double camera_m[9] = { 1714.4, 0, 334, 0, 1719.8, 202.4, 0, 0, 1.0 }; // 640*480
+    // TODO: Load form camera params
+    double camera_m[9] = { 1697.7, 0, 643, 0, 1704.3, 481.9, 0, 0, 1.0 }; // 1280*1024
+    // double camera_m[9] = { 1714.4, 0, 334, 0, 1719.8, 202.4, 0, 0, 1.0 }; // 640*480
     camera_matrix = cv::Mat(3, 3, CV_64F, camera_m).clone();
-    // double camera_d[4] = { -0.0838, 0.3175, 0, 0};  // 1280*1024
-    double camera_d[4] = { -0.0784, 0.4305, 0, 0 }; // 640*480
+    double camera_d[4] = { -0.0838, 0.3175, 0, 0 }; // 1280*1024
+    // double camera_d[4] = { -0.0784, 0.4305, 0, 0 }; // 640*480
     distortion_coeffs = cv::Mat(1, 4, CV_64F, camera_d).clone();
 
     small_armor_width = 122;
@@ -49,18 +49,18 @@ ArmorDetector::ArmorDetector()
     big_armor_points.emplace_back(cv::Point3f(half_big_armor_width, half_big_armor_height, 0.0)); // right down
     big_armor_points.emplace_back(cv::Point3f(half_big_armor_width, -half_big_armor_height, 0.0)); // right up
     big_armor_points.emplace_back(cv::Point3f(-half_big_armor_width, -half_big_armor_height, 0.0)); // left up
-    
 }
 
 ArmorDetector::~ArmorDetector()
 {
 }
 
-void ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target_3d)
+bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target_3d)
 {
     switch (state) {
     case ArmorDetector::State::SEARCHING_STATE:
-        SearchArmor(src, target_3d);
+        if (SearchArmor(src, target_3d))
+            return true;
         break;
     case ArmorDetector::State::TRACKING_STATE:
         // 跟踪
@@ -68,6 +68,7 @@ void ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target_3d)
     default:
         break;
     }
+    return false;
 }
 
 bool ArmorDetector::SearchArmor(const cv::Mat& src, cv::Point3f& target_3d)
@@ -91,8 +92,10 @@ bool ArmorDetector::SearchArmor(const cv::Mat& src, cv::Point3f& target_3d)
     ArmorInfo final_armor = SelectFinalArmor(armors);
     CalcControlInfo(final_armor, target_3d);
     // TODO: Create Tracker?
-    double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
-    std::cout << "\ntime: " << time;
+    if (enable_debug) {
+        double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
+        std::cout << "\ntime: " << time;
+    }
     return true;
 }
 
@@ -126,7 +129,6 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
         for (unsigned int j = 0; j < contours_color.size(); ++j) {
             if (cv::pointPolygonTest(contours_color[j], contours_brightness[i][0], false) >= 0.0) {
                 cv::RotatedRect single_light = cv::minAreaRect(contours_brightness[i]);
-                /* Filter Lights */
                 cv::Rect bounding_rect = single_light.boundingRect();
                 if (bounding_rect.height < bounding_rect.width || single_light.size.area() < light_min_area)
                     break;
@@ -137,14 +139,8 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
             }
         }
     }
-    if (enable_debug) {
+    if (enable_debug)
         cv::imshow("lights_before_filter", detect_lights);
-        /*
-        auto c = cv::waitKey(1);
-        if (c == 'a')
-            cv::waitKey(0);
-        */
-    }
 }
 
 cv::Mat ArmorDetector::DistillationColor(const cv::Mat& src)
@@ -219,14 +215,8 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
             }
         }
     }
-    if (enable_debug) {
+    if (enable_debug)
         cv::imshow("armors_before_filter", armors_before_filter);
-        /*
-        auto c = cv::waitKey(1);
-        if (c == 'a')
-            cv::waitKey(0);
-        */
-    }
 }
 
 void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::RotatedRect left_light, cv::RotatedRect right_light)
@@ -267,7 +257,7 @@ ArmorInfo ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
 void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
 {
     cv::Mat rvec, tvec;
-    if (armor.rect.size.width / armor.rect.size.height < 4)
+    if (armor.rect.size.width / armor.rect.size.height < 3)
         cv::solvePnP(small_armor_points, armor.vertex, camera_matrix, distortion_coeffs, rvec, tvec);
     else
         cv::solvePnP(big_armor_points, armor.vertex, camera_matrix, distortion_coeffs, rvec, tvec);
@@ -276,31 +266,24 @@ void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
     double x = tvec.at<double>(0);
     double y = tvec.at<double>(1);
     double z = tvec.at<double>(2);
-    float distance = static_cast<float>(sqrt(x * x + y * y + z * z));
-    // TODO: 测试小孔成像原理
-
-    double r11 = rmat.at<double>(0, 0);
-    double r21 = rmat.at<double>(1, 0);
     double r31 = rmat.at<double>(2, 0);
     double r32 = rmat.at<double>(2, 1);
     double r33 = rmat.at<double>(2, 2);
-
-    float theta_z = atan2(r21, r11) * 180 / CV_PI;
     float theta_y = atan2(-r31, sqrt(r32 * r32 + r33 * r33)) * 180 / CV_PI;
     float theta_x = atan2(r32, r33) * 180 / CV_PI;
 
-    float yaw_offset = 0;
-    float pitch_offset = 0;
+    float yaw_offset = theta_y;
+    float pitch_offset = theta_x;
+    float distance = static_cast<float>(sqrt(x * x + y * y + z * z));
     target = cv::Point3f(yaw_offset, pitch_offset, distance);
 
     if (enable_debug) {
         std::cout << "\nx = " << x;
         std::cout << "\ny = " << y;
         std::cout << "\nz = " << z;
+        std::cout << "\nyaw_offset = " << yaw_offset;
+        std::cout << "\npitch_offset = " << pitch_offset;
         std::cout << "\ndist = " << distance;
-        std::cout << "\ntheta_z = " << theta_z;
-        std::cout << "\ntheta_y =  " << theta_y;
-        std::cout << "\ntheta_x = " << theta_x;
         auto c = cv::waitKey(1);
         if (c == 'a')
             cv::waitKey(0);
