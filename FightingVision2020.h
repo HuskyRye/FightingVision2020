@@ -10,6 +10,7 @@
 #include "Camera/FightingSimpleCapture.h"
 
 #include "SerialPort/SerialPort.h"
+#include "SerialPort/Protocol.h"
 
 #include "Armor/ArmorDetector.h"
 

@@ -1,3 +1,4 @@
+
 #include "FightingSimpleCapture.h"
 
 FightingSimpleCapture::FightingSimpleCapture(int camera_id)

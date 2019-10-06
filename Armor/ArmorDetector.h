@@ -37,7 +37,6 @@ private:
     cv::Mat detect_lights;
     cv::Mat armors_before_filter;
     cv::Mat armors_after_filter;
-    bool SearchArmor(const cv::Mat& src, cv::Point3f& target_3d);
 
     float color_thresh;
     float blue_thresh, red_thresh;
@@ -56,7 +55,8 @@ private:
     ArmorInfo SelectFinalArmor(std::vector<ArmorInfo>& armors);
     
     cv::Mat camera_matrix, distortion_coeffs;
-    float small_armor_width, small_armor_height, big_armor_width, big_armor_height;
+    float camera_width, camera_height;
+    float small_armor_width, big_armor_width, armor_height;
     std::vector<cv::Point3f> small_armor_points, big_armor_points;
     void CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target_3d);
 };

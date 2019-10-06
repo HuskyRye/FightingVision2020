@@ -8,7 +8,6 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/Camera/Include)
 
-
 set(SRC
     "FightingVision2020.h"
     "FightingVision2020.cpp"
