@@ -34,6 +34,9 @@ private:
     double frame_rate;
     int brightness;
     double gamma;
+    double balanceRatio_Red;
+    double balanceRatio_Green;
+    double balanceRatio_Blue;
 };
 
 void grabbingCallback(const CFrame& pFrame, const void* pUser);

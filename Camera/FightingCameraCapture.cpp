@@ -14,6 +14,9 @@ FightingCameraCapture::FightingCameraCapture()
     frame_rate = 210;
     brightness = 50;
     gamma = 1;
+    balanceRatio_Red = 1.5;
+    balanceRatio_Green = 1;
+    balanceRatio_Blue = 1.5;
 }
 
 FightingCameraCapture::~FightingCameraCapture()
@@ -57,6 +60,8 @@ bool FightingCameraCapture::init()
     CDoubleNode nodeFrameRate = sptrAcquisitionControl->acquisitionFrameRate();
     CIntNode nodeBrightness = sptrISPControl->brightness();
     CDoubleNode nodeGamma = sptrAnalogControl->gamma();
+    CEnumNode nodeBalanceRatioSection = sptrAnalogControl->balanceRatioSelector();
+    CDoubleNode nodeBalanceRatio = sptrAnalogControl->balanceRatio();
 
     // 设置属性值
     nodeWidth.setValue(width);
@@ -66,6 +71,12 @@ bool FightingCameraCapture::init()
     nodeFrameRate.setValue(frame_rate);
     nodeBrightness.setValue(brightness);
     nodeGamma.setValue(gamma);
+    nodeBalanceRatioSection.setValue(0);
+    nodeBalanceRatio.setValue(balanceRatio_Red);
+    nodeBalanceRatioSection.setValue(1);
+    nodeBalanceRatio.setValue(balanceRatio_Green);
+    nodeBalanceRatioSection.setValue(2);
+    nodeBalanceRatio.setValue(balanceRatio_Blue);
 
     /* 创建流对象 */
     streamPtr = systemObj.createStreamSource(cameraSptr);

@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         printf("Video_source initialization failed.\n");
 
     // 串口初始化
-    SerialPort serial_port("COM1");
+    SerialPort serial_port("COM5");
     if (!serial_port.Init())
         printf("Serial_port initialization failed.\n");
     Protocol protocol(serial_port);
@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
                 cv::Point3f target_3d;
                 if (detector.DetectArmor(src, target_3d))
                     protocol.sendTarget(target_3d); // 发送数据
-                // cv::imshow("armor src", src);
-                // cv::waitKey(1);
+                cv::imshow("armor src", src);
+                cv::waitKey(1);
             }
             break;
         }
