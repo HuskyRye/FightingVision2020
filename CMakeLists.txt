@@ -11,12 +11,12 @@ include_directories(${PROJECT_SOURCE_DIR}/Camera/Include)
 set(SRC
     "FightingVision2020.h"
     "FightingVision2020.cpp"
-	"SerialPort/SerialPort.cpp"
-	"SerialPort/Protocol.cpp"
+    "SerialPort/SerialPort.cpp"
+    "SerialPort/Protocol.cpp"
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingCameraCapture.cpp"
-	"Camera/FightingSimpleCapture.cpp"
-	"Armor/ArmorDetector.cpp"
+    "Camera/FightingSimpleCapture.cpp"
+    "Armor/ArmorDetector.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})
