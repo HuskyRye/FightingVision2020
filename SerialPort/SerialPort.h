@@ -6,6 +6,7 @@
 #ifdef Windows
 #include <Windows.h>
 #elif defined Linux
+#include <string.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <unistd.h>
