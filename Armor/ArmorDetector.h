@@ -4,16 +4,14 @@
 
 class ArmorInfo {
 public:
-    ArmorInfo(cv::RotatedRect armor_rect, std::vector<cv::Point2f> armor_vertex, float armor_stddev = 0.0)
+    explicit ArmorInfo(cv::RotatedRect armor_rect, float armor_stddev = 0.0)
         : rect(armor_rect)
-        , vertex(armor_vertex)
         , stddev(armor_stddev)
     {
     }
 
 public:
     cv::RotatedRect rect;
-    std::vector<cv::Point2f> vertex;
     float stddev;
     // TODO: classifier ‰≥ˆ÷µ
 };
@@ -50,7 +48,6 @@ private:
     float armor_max_height_ratio;
     float armor_min_area;
     void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
-    void CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::RotatedRect left_light, cv::RotatedRect right_light);
     void FilterArmors(std::vector<ArmorInfo>& armors);
     ArmorInfo SelectFinalArmor(std::vector<ArmorInfo>& armors);
     

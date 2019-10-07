@@ -172,37 +172,12 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
                 && rect.size.area() > armor_min_area) {
                 if (enable_debug)
                     DrawRotatedRect(armors_before_filter, rect, cv::Scalar(0, 255, 0), 2);
-                std::vector<cv::Point2f> armor_points;
-                if (light1.center.x < light2.center.x)
-                    CalcArmorInfo(armor_points, light1, light2);
-                else
-                    CalcArmorInfo(armor_points, light2, light1);
-                armors.emplace_back(ArmorInfo(rect, armor_points));
+                armors.emplace_back(ArmorInfo(rect));
             }
         }
     }
     if (enable_debug)
         cv::imshow("armors_before_filter", armors_before_filter);
-}
-
-void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor_points, cv::RotatedRect left_light, cv::RotatedRect right_light)
-{
-    cv::Point2f left_points[4], right_points[4];
-    left_light.points(left_points);
-    right_light.points(right_points);
-
-    cv::Point2f left_down, left_up, right_up, right_down;
-    std::sort(left_points, left_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
-    std::sort(right_points, right_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
-    left_down = (left_points[2].x > left_points[3].x) ? left_points[2] : left_points[3];
-    left_up = (left_points[0].x > left_points[1].x) ? left_points[0] : left_points[1];
-    right_up = (right_points[0].x < right_points[1].x) ? right_points[0] : right_points[1];
-    right_down = (right_points[2].x < right_points[3].x) ? right_points[2] : right_points[3];
-
-    armor_points.emplace_back(left_down);
-    armor_points.emplace_back(right_down);
-    armor_points.emplace_back(right_up);
-    armor_points.emplace_back(left_up);
 }
 
 void ArmorDetector::FilterArmors(std::vector<ArmorInfo>& armors)
