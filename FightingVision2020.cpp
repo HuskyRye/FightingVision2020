@@ -10,13 +10,17 @@ int main(int argc, char* argv[])
     // capture = new FightingVideoCapture("D:\\VLOG\\中秋\\C0007.MP4");
     capture = new FightingCameraCapture();
     // capture = new FightingSimpleCapture(1);
-    if (!capture->init())
+    if (!capture->init()) {
         printf("Video_source initialization failed.\n");
+        return -1;
+    }
 
     // 串口初始化
     SerialPort serial_port("COM1");
-    if (!serial_port.Init())
+    if (!serial_port.Init()) {
         printf("Serial_port initialization failed.\n");
+        return -1;
+    }
     Protocol protocol(serial_port);
 
     // 状态机
