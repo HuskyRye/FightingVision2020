@@ -36,7 +36,7 @@ private:
     cv::Mat armors_before_filter;
     cv::Mat armors_after_filter;
 
-    float color_thresh;
+    float brightness_thresh;
     float blue_thresh, red_thresh;
     float light_min_area;
     void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);

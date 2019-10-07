@@ -11,7 +11,7 @@ ArmorDetector::ArmorDetector()
     enable_debug = false;
 
     // DetectLights
-    color_thresh = 200;
+    brightness_thresh = 200;
     blue_thresh = 50;
     red_thresh = 50;
     light_min_area = 1;
@@ -73,7 +73,7 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
     cv::cvtColor(src, gray_image, cv::COLOR_BGR2GRAY);
 
     cv::Mat binary_brightness_image;
-    cv::threshold(gray_image, binary_brightness_image, color_thresh, 255, cv::THRESH_BINARY);
+    cv::threshold(gray_image, binary_brightness_image, brightness_thresh, 255, cv::THRESH_BINARY);
 
     cv::Mat binary_color_image;
     float thresh = (enemy_color == EnemyColor::BLUE) ? blue_thresh : red_thresh;
