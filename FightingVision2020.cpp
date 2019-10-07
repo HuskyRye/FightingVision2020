@@ -12,14 +12,14 @@ int main(int argc, char* argv[])
     // capture = new FightingSimpleCapture(1);
     if (!capture->init()) {
         printf("Video_source initialization failed.\n");
-        return -1;
+        return 1;
     }
 
     // 串口初始化
     SerialPort serial_port("COM1");
     if (!serial_port.Init()) {
         printf("Serial_port initialization failed.\n");
-        return -1;
+        return 1;
     }
     Protocol protocol(serial_port);
 
