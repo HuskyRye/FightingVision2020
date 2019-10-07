@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         printf("Video_source initialization failed.\n");
 
     // 串口初始化
-    SerialPort serial_port("COM5");
+    SerialPort serial_port("COM1");
     if (!serial_port.Init())
         printf("Serial_port initialization failed.\n");
     Protocol protocol(serial_port);

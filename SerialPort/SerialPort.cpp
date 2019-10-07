@@ -241,7 +241,7 @@ bool SerialPort::ConfigDevice()
     return true;
 }
 
-int SerialDevice::Read(uint8_t* buf, int len)
+int SerialPort::Read(uint8_t* buf, int len)
 {
     int ret = -1;
     if (NULL == buf) {
@@ -260,7 +260,7 @@ int SerialDevice::Read(uint8_t* buf, int len)
     }
 }
 
-int SerialDevice::Write(const uint8_t* buf, int len)
+int SerialPort::Write(const uint8_t* buf, int len)
 {
     return write(serial_fd_, buf, len);
 }
