@@ -17,7 +17,7 @@ set/p=.<nul
 for /L %%i in (1 1 10) do set /p a=.<nul&ping.exe /n 2 127.0.0.1>nul
 echo .
 echo Wscript.Sleep WScript.Arguments(0) >%tmp%\delay.vbs
-cscript //b //nologo %tmp%\delay.vbs 10000
+cscript //b //nologo %tmp%\delay.vbs 1000
 
 echo ********Program Startup Completion********
 goto checkstart
