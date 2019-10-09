@@ -17,6 +17,7 @@ set(SRC
     "Camera/FightingCameraCapture.cpp"
     "Camera/FightingSimpleCapture.cpp"
     "Armor/ArmorDetector.cpp"
+    "Rune/RuneDetector.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})

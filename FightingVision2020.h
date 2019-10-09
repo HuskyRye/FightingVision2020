@@ -13,5 +13,6 @@
 #include "SerialPort/Protocol.h"
 
 #include "Armor/ArmorDetector.h"
+#include "Rune/RuneDetector.h"
 
-enum class State { ENERGY_STATE, ARMOR_STATE };
+enum class State { ARMOR_STATE, RUNE_STATE };

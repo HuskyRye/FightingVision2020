@@ -8,7 +8,7 @@ ArmorDetector::ArmorDetector()
     enemy_color = EnemyColor::BLUE;
 
     // TODO: 从文件读取参数
-    enable_debug = false;
+    enable_debug = true;
 
     // DetectLights
     brightness_thresh = 200;
