@@ -41,7 +41,7 @@ ArmorDetector::~ArmorDetector()
 {
 }
 
-bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target_3d)
+bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target)
 {
     if (enable_debug) {
         detect_lights = src.clone();
@@ -61,7 +61,7 @@ bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target_3d)
     if (armors.empty())
         return false;
     ArmorInfo final_armor = SelectFinalArmor(armors);
-    CalcControlInfo(final_armor, target_3d);
+    CalcControlInfo(final_armor, target);
     return true;
 }
 
