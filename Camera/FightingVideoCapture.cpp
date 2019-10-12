@@ -1,4 +1,5 @@
-﻿#include "FightingVideoCapture.h"
+﻿
+#include "FightingVideoCapture.h"
 
 FightingVideoCapture::FightingVideoCapture(const std::string& filename)
 {

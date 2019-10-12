@@ -1,3 +1,4 @@
+
 #pragma once
 
 template <class type, int length>

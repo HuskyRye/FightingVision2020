@@ -1,4 +1,5 @@
-﻿#include "SerialPort.h"
+﻿
+#include "SerialPort.h"
 
 #ifdef Windows
 

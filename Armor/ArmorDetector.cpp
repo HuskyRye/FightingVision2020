@@ -4,10 +4,8 @@
 ArmorDetector::ArmorDetector()
     : state(State::SEARCHING_STATE)
 {
-    // TODO: 从串口数据加载颜色
+    // TODO: 从串口读取的数据
     enemy_color = EnemyColor::BLUE;
-
-    // TODO: 从文件读取参数
     enable_debug = true;
 
     // DetectLights
@@ -21,16 +19,6 @@ ArmorDetector::ArmorDetector()
     armor_max_aspect_ratio = 6;
     armor_max_height_ratio = 2;
     armor_min_area = 200;
-
-    // TODO: Load form camera params
-    double camera_m[9] = { 1697.7, 0, 643, 0, 1704.3, 481.9, 0, 0, 1.0 }; // 1280*1024
-    double camera_d[4] = { -0.0838, 0.3175, 0, 0 }; // 1280*1024
-    // double camera_m[9] = { 1714.4, 0, 334, 0, 1719.8, 202.4, 0, 0, 1.0 }; // 640*480
-    // double camera_d[4] = { -0.0784, 0.4305, 0, 0 }; // 640*480
-    camera_matrix = cv::Mat(3, 3, CV_64F, camera_m).clone();
-    distortion_coeffs = cv::Mat(1, 4, CV_64F, camera_d).clone();
-    camera_width = 1280;
-    camera_height = 1024;
 
     small_armor_width = 0.122;
     big_armor_width = 0.225;
@@ -60,7 +48,7 @@ bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target)
     FilterArmors(armors);
     if (armors.empty())
         return false;
-    ArmorInfo final_armor = SelectFinalArmor(armors);
+    ArmorInfo& final_armor = SelectFinalArmor(armors);
     CalcControlInfo(final_armor, target);
     return true;
 }
@@ -186,7 +174,7 @@ void ArmorDetector::FilterArmors(std::vector<ArmorInfo>& armors)
     // TODO: Classifier
 }
 
-ArmorInfo ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
+ArmorInfo& ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
 {
     std::sort(armors.begin(), armors.end(),
         [](const ArmorInfo& p1, const ArmorInfo& p2) { return p1.rect.size.area() > p2.rect.size.area(); });
@@ -196,10 +184,10 @@ ArmorInfo ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
 
 void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
 {
-    static float half_camera_width = camera_width / 2;
-    static float half_camera_height = camera_height / 2;
-    static float camera_fx = camera_matrix.at<double>(0, 0);
-    static float camera_fy = camera_matrix.at<double>(1, 1);
+    static float half_camera_width = cameraInfo.resolution_width / 2;
+    static float half_camera_height = cameraInfo.resolution_height / 2;
+    static float camera_fx = cameraInfo.camera_matrix.at<double>(0, 0);
+    static float camera_fy = cameraInfo.camera_matrix.at<double>(1, 1);
     constexpr double rad = 57.295779513082320876798154814105;
     float yaw_offset = atan2(half_camera_width - armor.rect.center.x, camera_fx) * rad;
     float pitch_offset = atan2(half_camera_height - armor.rect.center.y, camera_fy) * rad;

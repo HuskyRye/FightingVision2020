@@ -1,3 +1,4 @@
+
 #include "Protocol.h"
 
 Protocol::Protocol(SerialPort& serial_port)

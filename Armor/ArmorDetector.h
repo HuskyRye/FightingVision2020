@@ -1,6 +1,8 @@
+
 #pragma once
 
 #include "opencv2/opencv.hpp"
+#include "../Camera/FightingCameraParam.h"
 
 class ArmorInfo {
 public:
@@ -49,11 +51,9 @@ private:
     float armor_min_area;
     void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
     void FilterArmors(std::vector<ArmorInfo>& armors);
-    ArmorInfo SelectFinalArmor(std::vector<ArmorInfo>& armors);
+    ArmorInfo& SelectFinalArmor(std::vector<ArmorInfo>& armors);
     
-    cv::Mat camera_matrix, distortion_coeffs;
-    float camera_width, camera_height;
     float small_armor_width, big_armor_width, armor_height;
     std::vector<cv::Point3f> small_armor_points, big_armor_points;
-    void CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target_3d);
+    void CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target);
 };

@@ -9,13 +9,13 @@ find_package(OpenCV REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR}/Camera/Include)
 
 set(SRC
-    "FightingVision2020.h"
     "FightingVision2020.cpp"
     "SerialPort/SerialPort.cpp"
     "SerialPort/Protocol.cpp"
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingCameraCapture.cpp"
     "Camera/FightingSimpleCapture.cpp"
+	"Camera/FightingCameraParam.cpp"
     "Armor/ArmorDetector.cpp"
     "Rune/RuneDetector.cpp"
 )
@@ -32,4 +32,7 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libMVSDK.so" )
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libImageConvert.so" )
 endif()
+
+file(COPY "${PROJECT_SOURCE_DIR}/Camera/DahuaCamera.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+
 

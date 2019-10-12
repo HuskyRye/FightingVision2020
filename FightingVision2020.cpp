@@ -1,15 +1,17 @@
 
 #include "FightingVision2020.h"
 
-using namespace std;
+enum class State { ARMOR_STATE,
+    RUNE_STATE };
 
 int main(int argc, char* argv[])
 {
     /* Video source */
     FightingCapture* capture;
-    capture = new FightingVideoCapture("D:\\大学\\RoboMaster\\RM2019能量机关视频\\Big_Blue_Light.MOV");
+    capture = new FightingVideoCapture("D:\\大学\\RoboMaster\\RM2019能量机关视频\\Big_Red_Light.MOV");
     // capture = new FightingCameraCapture();
     // capture = new FightingSimpleCapture(1);
+    LoadCameraParam();
     if (!capture->init()) {
         printf("Video source initialization failed.\n");
         return 1;

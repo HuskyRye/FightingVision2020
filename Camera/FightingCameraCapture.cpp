@@ -6,17 +6,6 @@ using namespace Dahua::Infra;
 
 FightingCameraCapture::FightingCameraCapture()
 {
-    // TODO: 从文件读取相机配置
-    width = 1280;
-    height = 1024;
-    exposure_auto = false;
-    exposure_time = 9000;
-    frame_rate = 210;
-    brightness = 50;
-    gamma = 1;
-    balanceRatio_Red = 1.5;
-    balanceRatio_Green = 1;
-    balanceRatio_Blue = 1.5;
 }
 
 FightingCameraCapture::~FightingCameraCapture()
@@ -64,19 +53,19 @@ bool FightingCameraCapture::init()
     CDoubleNode nodeBalanceRatio = sptrAnalogControl->balanceRatio();
 
     // 设置属性值
-    nodeWidth.setValue(width);
-    nodeHeight.setValue(height);
-    nodeExposureAuto.setValue(exposure_auto);
-    nodeExposureTime.setValue(exposure_time);
-    nodeFrameRate.setValue(frame_rate);
-    nodeBrightness.setValue(brightness);
-    nodeGamma.setValue(gamma);
+    nodeWidth.setValue(cameraInfo.resolution_width);
+    nodeHeight.setValue(cameraInfo.resolution_height);
+    nodeExposureAuto.setValue(cameraInfo.auto_exposure);
+    nodeExposureTime.setValue(cameraInfo.exposure_time);
+    nodeFrameRate.setValue(cameraInfo.frame_rate);
+    nodeBrightness.setValue(cameraInfo.brightness);
+    nodeGamma.setValue(cameraInfo.gamma);
     nodeBalanceRatioSection.setValue(0);
-    nodeBalanceRatio.setValue(balanceRatio_Red);
+    nodeBalanceRatio.setValue(cameraInfo.balance_ratio_red);
     nodeBalanceRatioSection.setValue(1);
-    nodeBalanceRatio.setValue(balanceRatio_Green);
+    nodeBalanceRatio.setValue(cameraInfo.balance_ratio_green);
     nodeBalanceRatioSection.setValue(2);
-    nodeBalanceRatio.setValue(balanceRatio_Blue);
+    nodeBalanceRatio.setValue(cameraInfo.balance_ratio_blue);
 
     /* 创建流对象 */
     streamPtr = systemObj.createStreamSource(cameraSptr);
@@ -109,12 +98,6 @@ bool FightingCameraCapture::read(cv::Mat& image)
 
 void grabbingCallback(const CFrame& pFrame, const void* pUser)
 {
-    /* timing
-    double start = static_cast<double>(cv::getTickCount());
-    double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
-    std::cout << "time: " << time << "s\n" << std::endl;
-    */
-
     int nBGRBufferSize = pFrame.getImageWidth() * pFrame.getImageHeight() * 3;
     uint8_t* pBGRbuffer = new uint8_t[nBGRBufferSize];
 
@@ -128,8 +111,7 @@ void grabbingCallback(const CFrame& pFrame, const void* pUser)
     openParam.pixelForamt = pFrame.getImagePixelFormat();
 
     // 转换为 BGR24
-    IMGCNV_EErr status = IMGCNV_ConvertToBGR24((unsigned char*)pFrame.getImage(), &openParam, pBGRbuffer, &nBGRBufferSize);
-    if (IMGCNV_SUCCESS != status) {
+    if (IMGCNV_ConvertToBGR24((unsigned char*)pFrame.getImage(), &openParam, pBGRbuffer, &nBGRBufferSize) != IMGCNV_SUCCESS) {
         delete[] pBGRbuffer;
         printf("Convert fail. \n");
         return;

@@ -1,13 +1,15 @@
+
 #pragma once
 
 #include "FightingCapture.h"
-
-#include "CircularQueue.h"
 
 #include "GenICam/Camera.h"
 #include "GenICam/StreamSource.h"
 #include "GenICam/System.h"
 #include "ImageConvert.h"
+
+#include "CircularQueue.h"
+#include "FightingCameraParam.h"
 
 using namespace Dahua::GenICam;
 
@@ -26,17 +28,6 @@ private:
     IStreamSourcePtr streamPtr;
 
     CircularQueue<cv::Mat, 3> imageQueue;
-
-    int width;
-    int height;
-    bool exposure_auto;
-    double exposure_time;
-    double frame_rate;
-    int brightness;
-    double gamma;
-    double balanceRatio_Red;
-    double balanceRatio_Green;
-    double balanceRatio_Blue;
 };
 
 void grabbingCallback(const CFrame& pFrame, const void* pUser);
