@@ -23,22 +23,6 @@ ArmorDetector::ArmorDetector()
     // TODO: 从串口读取的数据
     enemy_color = EnemyColor::BLUE;
     enable_debug = true;
-
-    // DetectLights
-    brightness_thresh = 200;
-    blue_thresh = 50;
-    red_thresh = 50;
-    light_min_area = 1;
-
-    // PossibleArmors
-    armor_max_angle_diff = 15;
-    armor_max_aspect_ratio = 6;
-    armor_max_height_ratio = 2;
-    armor_min_area = 200;
-
-    small_armor_width = 0.122;
-    big_armor_width = 0.225;
-    armor_height = 0.045;
 }
 
 ArmorDetector::~ArmorDetector()
@@ -77,10 +61,10 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
     cv::cvtColor(src, gray_image, cv::COLOR_BGR2GRAY);
 
     cv::Mat binary_brightness_image;
-    cv::threshold(gray_image, binary_brightness_image, brightness_thresh, 255, cv::THRESH_BINARY);
+    cv::threshold(gray_image, binary_brightness_image, armorParam.brightness_thresh, 255, cv::THRESH_BINARY);
 
     cv::Mat binary_color_image;
-    float thresh = (enemy_color == EnemyColor::BLUE) ? blue_thresh : red_thresh;
+    float thresh = (enemy_color == EnemyColor::BLUE) ? armorParam.blue_thresh : armorParam.red_thresh;
     cv::threshold(distillation, binary_color_image, thresh, 255, cv::THRESH_BINARY);
 
     if (enable_debug) {
@@ -100,7 +84,7 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
             if (cv::pointPolygonTest(contours_color[j], contours_brightness[i][0], false) >= 0.0) {
                 cv::RotatedRect single_light = cv::minAreaRect(contours_brightness[i]);
                 cv::Rect bounding_rect = single_light.boundingRect();
-                if (bounding_rect.height < bounding_rect.width || single_light.size.area() < light_min_area)
+                if (bounding_rect.height < bounding_rect.width || single_light.size.area() < armorParam.light_min_area)
                     break;
                 lights.emplace_back(single_light);
                 if (enable_debug)
@@ -169,11 +153,11 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
                 std::cout << "\nrect.area = " << rect.size.area();
             }
             */
-            if (angle_diff < armor_max_angle_diff
-                && std::max(abs(center_angle - light1_angle), abs(center_angle - light2_angle)) < armor_max_angle_diff
-                && (rect.size.width / rect.size.height) < armor_max_aspect_ratio
-                && (height.second / height.first) < armor_max_height_ratio
-                && rect.size.area() > armor_min_area) {
+            if (angle_diff < armorParam.armor_max_angle_diff
+                && std::max(abs(center_angle - light1_angle), abs(center_angle - light2_angle)) < armorParam.armor_max_angle_diff
+                && (rect.size.width / rect.size.height) < armorParam.armor_max_aspect_ratio
+                && (height.second / height.first) < armorParam.armor_max_height_ratio
+                && rect.size.area() > armorParam.armor_min_area) {
                 if (enable_debug)
                     DrawRotatedRect(armors_before_filter, rect, cv::Scalar(0, 255, 0), 2);
                 armors.emplace_back(ArmorInfo(rect));
@@ -200,13 +184,13 @@ ArmorInfo& ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
 
 void ArmorDetector::CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target)
 {
-    static float half_camera_width = cameraInfo.resolution_width / 2;
-    static float half_camera_height = cameraInfo.resolution_height / 2;
-    static float camera_fx = cameraInfo.camera_matrix.at<double>(0, 0);
-    static float camera_fy = cameraInfo.camera_matrix.at<double>(1, 1);
+    static float half_camera_width = cameraParam.resolution_width / 2;
+    static float half_camera_height = cameraParam.resolution_height / 2;
+    static float camera_fx = cameraParam.camera_matrix.at<double>(0, 0);
+    static float camera_fy = cameraParam.camera_matrix.at<double>(1, 1);
     constexpr double rad = 57.295779513082320876798154814105;
     float yaw_offset = atan2(half_camera_width - armor.rect.center.x, camera_fx) * rad;
     float pitch_offset = atan2(half_camera_height - armor.rect.center.y, camera_fy) * rad;
-    float distance = camera_fx * armor_height / armor.rect.size.height;
+    float distance = camera_fx * armorParam.armor_height / armor.rect.size.height;
     target = cv::Point3f(yaw_offset, pitch_offset, distance);
 }

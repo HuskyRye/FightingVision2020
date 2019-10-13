@@ -19,7 +19,8 @@
 
 #include "opencv2/opencv.hpp"
 
-struct CameraInfo {
+struct CameraParam {
+    std::string camera_type;
     std::string camera_name;
 
     cv::Mat camera_matrix;
@@ -29,11 +30,9 @@ struct CameraInfo {
     int resolution_height;
 
     bool auto_exposure;
-    // double exposure_value; // ???
     double exposure_time;
     double frame_rate;
     int brightness;
-    double gamma;
 
     bool auto_white_balance; // TODO: config this in FightingCameraCapture.cpp
     double balance_ratio_red;
@@ -41,5 +40,5 @@ struct CameraInfo {
     double balance_ratio_blue;
 };
 
-extern CameraInfo cameraInfo;
+extern CameraParam cameraParam;
 void LoadCameraParam();

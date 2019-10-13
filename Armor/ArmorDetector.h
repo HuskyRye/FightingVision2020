@@ -19,6 +19,7 @@
 
 #include "opencv2/opencv.hpp"
 #include "../Camera/FightingCameraParam.h"
+#include "ArmorParam.h"
 
 class ArmorInfo {
 public:
@@ -54,22 +55,14 @@ private:
     cv::Mat armors_before_filter;
     cv::Mat armors_after_filter;
 
-    float brightness_thresh;
-    float blue_thresh, red_thresh;
-    float light_min_area;
     void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
     cv::Mat DistillationColor(const cv::Mat& src);
     void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
 
-    float armor_max_angle_diff;
-    float armor_max_aspect_ratio;
-    float armor_max_height_ratio;
-    float armor_min_area;
     void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
     void FilterArmors(std::vector<ArmorInfo>& armors);
     ArmorInfo& SelectFinalArmor(std::vector<ArmorInfo>& armors);
     
-    float small_armor_width, big_armor_width, armor_height;
     std::vector<cv::Point3f> small_armor_points, big_armor_points;
     void CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target);
 };

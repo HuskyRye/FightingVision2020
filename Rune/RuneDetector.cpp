@@ -19,8 +19,8 @@
 
 RuneDetector::RuneDetector()
 {
-    enable_debug = true;
     // TODO: load from Serial
+    enable_debug = false;
 }
 
 RuneDetector::~RuneDetector()
@@ -42,7 +42,7 @@ bool RuneDetector::DetectRune(cv::Mat& src, cv::Point3f& target)
     cv::cvtColor(src, gray_image, cv::COLOR_BGR2GRAY);
 
     cv::Mat binary_brightness_image;
-    cv::threshold(gray_image, binary_brightness_image, 200, 255, cv::THRESH_BINARY);
+    cv::threshold(gray_image, binary_brightness_image, runeParam.brightness_thresh, 255, cv::THRESH_BINARY);
 
     std::vector<std::vector<cv::Point>> rune_contours;
     std::vector<cv::Vec4i> rune_hierarchy;
@@ -67,7 +67,6 @@ bool RuneDetector::DetectRune(cv::Mat& src, cv::Point3f& target)
         cv::imshow("show_possible_armors", show_possible_armors);
         cv::imshow("show_final_armor", show_final_armor);
     }
-
     return true;
 }
 
@@ -76,10 +75,9 @@ void RuneDetector::PossibleArmors(const std::vector<std::vector<cv::Point>>& con
     int index = 0;
     do {
         int child_index = hierarchy[index][2];
-        if (child_index != -1
-            && hierarchy[child_index][0] == -1) {
+        if (child_index != -1 && hierarchy[child_index][0] == -1) {
             cv::RotatedRect possible_armor = cv::minAreaRect(contours[child_index]);
-            if (possible_armor.size.area() > 100)
+            if (possible_armor.size.area() > runeParam.armor_min_area)
                 armors.emplace_back(possible_armor);
         }
     } while (hierarchy[index][0] != -1 && (index = hierarchy[index][0]));
@@ -94,15 +92,15 @@ cv::RotatedRect& RuneDetector::SelectFinalArmor(std::vector<cv::RotatedRect>& ar
 
 void RuneDetector::CalcControlInfo(const cv::RotatedRect& armor, cv::Point3f& target)
 {
-    static float half_camera_width = cameraInfo.resolution_width / 2;
-    static float half_camera_height = cameraInfo.resolution_height / 2;
-    static float camera_fx = cameraInfo.camera_matrix.at<double>(0, 0);
-    static float camera_fy = cameraInfo.camera_matrix.at<double>(1, 1);
+    static float half_camera_width = cameraParam.resolution_width / 2;
+    static float half_camera_height = cameraParam.resolution_height / 2;
+    static float camera_fx = cameraParam.camera_matrix.at<double>(0, 0);
+    static float camera_fy = cameraParam.camera_matrix.at<double>(1, 1);
     constexpr double rad = 57.295779513082320876798154814105;
     float yaw_offset = atan2(half_camera_width - armor.center.x, camera_fx) * rad;
     float pitch_offset = atan2(half_camera_height - armor.center.y, camera_fy) * rad;
-    // float distance = camera_fx * armor_height / armor.size.height;
-    // target = cv::Point3f(yaw_offset, pitch_offset, distance);
+    float distance = camera_fx * runeParam.armor_height / armor.size.height;
+    target = cv::Point3f(yaw_offset, pitch_offset, distance);
 }
 
 void RuneDetector::DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness)

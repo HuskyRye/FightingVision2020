@@ -64,24 +64,22 @@ bool FightingCameraCapture::init()
     CDoubleNode nodeExposureTime = sptrAcquisitionControl->exposureTime();
     CDoubleNode nodeFrameRate = sptrAcquisitionControl->acquisitionFrameRate();
     CIntNode nodeBrightness = sptrISPControl->brightness();
-    CDoubleNode nodeGamma = sptrAnalogControl->gamma();
     CEnumNode nodeBalanceRatioSection = sptrAnalogControl->balanceRatioSelector();
     CDoubleNode nodeBalanceRatio = sptrAnalogControl->balanceRatio();
 
     // 设置属性值
-    nodeWidth.setValue(cameraInfo.resolution_width);
-    nodeHeight.setValue(cameraInfo.resolution_height);
-    nodeExposureAuto.setValue(cameraInfo.auto_exposure);
-    nodeExposureTime.setValue(cameraInfo.exposure_time);
-    nodeFrameRate.setValue(cameraInfo.frame_rate);
-    nodeBrightness.setValue(cameraInfo.brightness);
-    nodeGamma.setValue(cameraInfo.gamma);
+    nodeWidth.setValue(cameraParam.resolution_width);
+    nodeHeight.setValue(cameraParam.resolution_height);
+    nodeExposureAuto.setValue(cameraParam.auto_exposure);
+    nodeExposureTime.setValue(cameraParam.exposure_time);
+    nodeFrameRate.setValue(cameraParam.frame_rate);
+    nodeBrightness.setValue(cameraParam.brightness);
     nodeBalanceRatioSection.setValue(0);
-    nodeBalanceRatio.setValue(cameraInfo.balance_ratio_red);
+    nodeBalanceRatio.setValue(cameraParam.balance_ratio_red);
     nodeBalanceRatioSection.setValue(1);
-    nodeBalanceRatio.setValue(cameraInfo.balance_ratio_green);
+    nodeBalanceRatio.setValue(cameraParam.balance_ratio_green);
     nodeBalanceRatioSection.setValue(2);
-    nodeBalanceRatio.setValue(cameraInfo.balance_ratio_blue);
+    nodeBalanceRatio.setValue(cameraParam.balance_ratio_blue);
 
     /* 创建流对象 */
     streamPtr = systemObj.createStreamSource(cameraSptr);

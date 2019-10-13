@@ -1,6 +1,7 @@
 %YAML:1.0
 ---
-camera_name: wobuzhidao
+camera_type: Video
+camera_name: somename(detailed)
 camera_matrix: !!opencv-matrix
    rows: 3
    cols: 3
@@ -18,7 +19,6 @@ auto_exposure: 0
 exposure_time: 10000
 frame_rate: 210
 brightness: 50
-gamma: 1.
 auto_white_balance: 0
 balance_ratio_red: 1.5000000000000000e+00
 balance_ratio_green: 1.

@@ -17,20 +17,17 @@
 
 #pragma once
 
-#include <iostream>
+#include "opencv2/opencv.hpp"
 
-#include <opencv2/opencv.hpp>
+struct RuneParam {
+    // ArmorDetector
+    float brightness_thresh;
+    float armor_min_area;
 
-#include "Camera/FightingCapture.h"
-#include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingCameraCapture.h"
-#include "Camera/FightingSimpleCapture.h"
-#include "Camera/FightingCameraParam.h"
+    // ArmorSize
+    float armor_width;
+    float armor_height;
+};
 
-#include "SerialPort/SerialPort.h"
-#include "SerialPort/Protocol.h"
-
-#include "Armor/ArmorDetector.h"
-#include "Armor/ArmorParam.h"
-#include "Rune/RuneDetector.h"
-#include "Rune/RuneParam.h"
+extern RuneParam runeParam;
+void LoadRuneParam();

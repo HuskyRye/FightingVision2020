@@ -17,24 +17,24 @@
 
 #include "FightingCameraParam.h"
 
-CameraInfo cameraInfo;
+CameraParam cameraParam;
 
 void LoadCameraParam()
 {
-    cv::FileStorage fs("DahuaCamera.yml", cv::FileStorage::READ);
-    fs["camera_name"] >> cameraInfo.camera_name;
-    fs["camera_matrix"] >> cameraInfo.camera_matrix;
-    fs["camera_distortion"] >> cameraInfo.camera_distortion;
-    fs["resolution_width"] >> cameraInfo.resolution_width;
-    fs["resolution_height"] >> cameraInfo.resolution_height;
-    fs["auto_exposure"] >> cameraInfo.auto_exposure;
-    fs["exposure_time"] >> cameraInfo.exposure_time;
-    fs["frame_rate"] >> cameraInfo.frame_rate;
-    fs["brightness"] >> cameraInfo.brightness;
-    fs["gamma"] >> cameraInfo.gamma;
-    fs["auto_white_balance"] >> cameraInfo.auto_white_balance;
-    fs["balance_ratio_red"] >> cameraInfo.balance_ratio_red;
-    fs["balance_ratio_green"] >> cameraInfo.balance_ratio_green;
-    fs["balance_ratio_blue"] >> cameraInfo.balance_ratio_blue;
+    cv::FileStorage fs("CameraParam.yml", cv::FileStorage::READ);
+    fs["camera_type"] >> cameraParam.camera_type;
+    fs["camera_name"] >> cameraParam.camera_name;
+    fs["camera_matrix"] >> cameraParam.camera_matrix;
+    fs["camera_distortion"] >> cameraParam.camera_distortion;
+    fs["resolution_width"] >> cameraParam.resolution_width;
+    fs["resolution_height"] >> cameraParam.resolution_height;
+    fs["auto_exposure"] >> cameraParam.auto_exposure;
+    fs["exposure_time"] >> cameraParam.exposure_time;
+    fs["frame_rate"] >> cameraParam.frame_rate;
+    fs["brightness"] >> cameraParam.brightness;
+    fs["auto_white_balance"] >> cameraParam.auto_white_balance;
+    fs["balance_ratio_red"] >> cameraParam.balance_ratio_red;
+    fs["balance_ratio_green"] >> cameraParam.balance_ratio_green;
+    fs["balance_ratio_blue"] >> cameraParam.balance_ratio_blue;
     fs.release();
 }

@@ -17,7 +17,9 @@ set(SRC
     "Camera/FightingSimpleCapture.cpp"
 	"Camera/FightingCameraParam.cpp"
     "Armor/ArmorDetector.cpp"
+	"Armor/ArmorParam.cpp"
     "Rune/RuneDetector.cpp"
+	"Rune/RuneParam.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})
@@ -33,6 +35,6 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libImageConvert.so" )
 endif()
 
-file(COPY "${PROJECT_SOURCE_DIR}/Camera/DahuaCamera.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
-
-
+file(COPY "${PROJECT_SOURCE_DIR}/Camera/CameraParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Armor/ArmorParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Rune/RuneParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)

@@ -15,22 +15,16 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "RuneParam.h"
 
-#include <iostream>
+RuneParam runeParam;
 
-#include <opencv2/opencv.hpp>
-
-#include "Camera/FightingCapture.h"
-#include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingCameraCapture.h"
-#include "Camera/FightingSimpleCapture.h"
-#include "Camera/FightingCameraParam.h"
-
-#include "SerialPort/SerialPort.h"
-#include "SerialPort/Protocol.h"
-
-#include "Armor/ArmorDetector.h"
-#include "Armor/ArmorParam.h"
-#include "Rune/RuneDetector.h"
-#include "Rune/RuneParam.h"
+void LoadRuneParam()
+{
+    cv::FileStorage fs("RuneParam.yml", cv::FileStorage::READ);
+    fs["brightness_thresh"] >> runeParam.brightness_thresh;
+    fs["armor_min_area"] >> runeParam.armor_min_area;
+    fs["big_armor_width"] >> runeParam.armor_width;
+    fs["armor_height"] >> runeParam.armor_height;
+    fs.release();
+}
