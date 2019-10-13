@@ -29,7 +29,6 @@ public:
 
 private:
     bool enable_debug;
-    cv::Mat show_rune_contours;
     cv::Mat show_possible_armors;
     cv::Mat show_final_armor;
     void PossibleArmors(const std::vector<std::vector<cv::Point>>& contours,

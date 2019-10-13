@@ -32,9 +32,9 @@ ArmorDetector::~ArmorDetector()
 bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target)
 {
     if (enable_debug) {
-        detect_lights = src.clone();
-        armors_before_filter = src.clone();
-        armors_after_filter = src.clone();
+        show_lights = src.clone();
+        show_possible_armors = src.clone();
+        show_armors_after_filter = src.clone();
         auto c = cv::waitKey(1);
         if (c == 'a')
             cv::waitKey();
@@ -88,13 +88,13 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
                     break;
                 lights.emplace_back(single_light);
                 if (enable_debug)
-                    DrawRotatedRect(detect_lights, single_light, cv::Scalar(0, 255, 0), 2);
+                    DrawRotatedRect(show_lights, single_light, cv::Scalar(0, 255, 0), 2);
                 break;
             }
         }
     }
     if (enable_debug)
-        cv::imshow("lights_before_filter", detect_lights);
+        cv::imshow("show_lights", show_lights);
 }
 
 cv::Mat ArmorDetector::DistillationColor(const cv::Mat& src)
@@ -158,14 +158,14 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
                 && (rect.size.width / rect.size.height) < armorParam.armor_max_aspect_ratio
                 && (height.second / height.first) < armorParam.armor_max_height_ratio
                 && rect.size.area() > armorParam.armor_min_area) {
-                if (enable_debug)
-                    DrawRotatedRect(armors_before_filter, rect, cv::Scalar(0, 255, 0), 2);
                 armors.emplace_back(ArmorInfo(rect));
+                if (enable_debug)
+                    DrawRotatedRect(show_possible_armors, rect, cv::Scalar(0, 255, 0), 2);
             }
         }
     }
     if (enable_debug)
-        cv::imshow("armors_before_filter", armors_before_filter);
+        cv::imshow("show_possible_armors", show_possible_armors);
 }
 
 void ArmorDetector::FilterArmors(std::vector<ArmorInfo>& armors)
@@ -178,6 +178,10 @@ ArmorInfo& ArmorDetector::SelectFinalArmor(std::vector<ArmorInfo>& armors)
 {
     std::sort(armors.begin(), armors.end(),
         [](const ArmorInfo& p1, const ArmorInfo& p2) { return p1.rect.size.area() > p2.rect.size.area(); });
+    if (enable_debug) {
+        DrawRotatedRect(show_armors_after_filter, armors[0].rect, cv::Scalar(0, 255, 0), 2);
+        cv::imshow("show_armors_after_filter", show_armors_after_filter);
+    }
     return armors[0];
     // TODO: 根据 classifier 的值进行选择
 }

@@ -51,9 +51,9 @@ private:
         BLUE };
     EnemyColor enemy_color;
 
-    cv::Mat detect_lights;
-    cv::Mat armors_before_filter;
-    cv::Mat armors_after_filter;
+    cv::Mat show_lights;
+    cv::Mat show_possible_armors;
+    cv::Mat show_armors_after_filter;
 
     void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
     cv::Mat DistillationColor(const cv::Mat& src);
