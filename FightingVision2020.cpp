@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     else if (cameraParam.camera_type == "USB")
         capture = new FightingSimpleCapture(0);
     else
-        capture = new FightingVideoCapture("D:\\大学\\RoboMaster\\RM2019能量机关视频\\Big_Blue_Light.MOV");
+        capture = new FightingVideoCapture("D:\\大学\\RoboMaster\\RM2019能量机关视频\\Big_Blue_Light.mov");
     if (!capture->init()) {
         printf("Video source initialization failed.\n");
         return 1;

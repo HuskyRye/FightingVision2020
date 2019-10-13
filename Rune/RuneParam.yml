@@ -1,6 +1,6 @@
 %YAML:1.0
 ---
 brightness_thresh: 200
-armor_min_area: 100
+armor_min_area: 1000
 armor_width: 2.2500000000000001e-01
 armor_height: 4.4999999999999998e-02

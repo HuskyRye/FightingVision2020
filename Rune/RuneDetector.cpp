@@ -20,7 +20,7 @@
 RuneDetector::RuneDetector()
 {
     // TODO: load from Serial
-    enable_debug = false;
+    enable_debug = true;
 }
 
 RuneDetector::~RuneDetector()
@@ -43,29 +43,40 @@ bool RuneDetector::DetectRune(cv::Mat& src, cv::Point3f& target)
 
     cv::Mat binary_brightness_image;
     cv::threshold(gray_image, binary_brightness_image, runeParam.brightness_thresh, 255, cv::THRESH_BINARY);
+    if (enable_debug)
+        cv::imshow("binary_brightness_image", binary_brightness_image);
 
     std::vector<std::vector<cv::Point>> rune_contours;
     std::vector<cv::Vec4i> rune_hierarchy;
     cv::findContours(binary_brightness_image, rune_contours, rune_hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE);
-
     if (rune_contours.empty())
         return false;
+
+    if (enable_debug) {
+        cv::drawContours(show_rune_contours, rune_contours, -1, cv::Scalar(0, 0, 255), 1);
+        cv::imshow("show_rune_contours", show_rune_contours);
+        std::cout << "\n-------\n";
+        for (int i = 0; i < rune_hierarchy.size(); ++i) {
+            printf("%d: %d %d %d %d\n", i, rune_hierarchy[i][0], rune_hierarchy[i][1], rune_hierarchy[i][2], rune_hierarchy[i][3]);
+        }
+    }
+
     std::vector<cv::RotatedRect> possible_armors;
     PossibleArmors(rune_contours, rune_hierarchy, possible_armors);
     if (possible_armors.empty())
         return false;
+    if (enable_debug) {
+        for (int i = 0; i < possible_armors.size(); ++i)
+            DrawRotatedRect(show_possible_armors, possible_armors[i], cv::Scalar(0, 255, 0), 2);
+        cv::imshow("show_possible_armors", show_possible_armors);
+    }
+
     cv::RotatedRect& final_armor = SelectFinalArmor(possible_armors);
     CalcControlInfo(final_armor, target);
-
     if (enable_debug) {
-        cv::drawContours(show_rune_contours, rune_contours, -1, cv::Scalar(0, 255, 0), 2);
-        for (auto rect : possible_armors)
-            DrawRotatedRect(show_possible_armors, rect, cv::Scalar(0, 255, 0), 2);
         DrawRotatedRect(show_final_armor, final_armor, cv::Scalar(0, 255, 0), 2);
-        cv::imshow("binary_brightness_image", binary_brightness_image);
-        cv::imshow("show_rune_contours", show_rune_contours);
-        cv::imshow("show_possible_armors", show_possible_armors);
         cv::imshow("show_final_armor", show_final_armor);
+        std::cout << "\narea = " << final_armor.size.area();
     }
     return true;
 }
@@ -108,5 +119,5 @@ void RuneDetector::DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& 
     cv::Point2f vertices[4];
     rect.points(vertices);
     for (int i = 0; i < 4; i++)
-        cv::line(show_final_armor, vertices[i], vertices[(i + 1) % 4], color, thickness, cv::LINE_AA);
+        cv::line(image, vertices[i], vertices[(i + 1) % 4], color, thickness, cv::LINE_AA);
 }
