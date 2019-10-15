@@ -19,7 +19,7 @@
 
 ArmorParam armorParam;
 
-void LoadArmorParam()
+void ArmorParam::LoadArmorParam()
 {
     cv::FileStorage fs("ArmorParam.yml", cv::FileStorage::READ);
     fs["brightness_thresh"] >> armorParam.brightness_thresh;

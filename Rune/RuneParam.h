@@ -27,7 +27,8 @@ struct RuneParam {
     // ArmorSize
     float armor_width;
     float armor_height;
+
+    void LoadRuneParam();
 };
 
 extern RuneParam runeParam;
-void LoadRuneParam();

@@ -23,8 +23,8 @@
 
 #include "Camera/FightingCapture.h"
 #include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingCameraCapture.h"
-#include "Camera/FightingSimpleCapture.h"
+#include "Camera/FightingDahuaCapture.h"
+#include "Camera/FightingUSBCapture.h"
 #include "Camera/FightingCameraParam.h"
 
 #include "SerialPort/SerialPort.h"

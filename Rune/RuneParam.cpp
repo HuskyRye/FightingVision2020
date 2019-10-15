@@ -19,7 +19,7 @@
 
 RuneParam runeParam;
 
-void LoadRuneParam()
+void RuneParam::LoadRuneParam()
 {
     cv::FileStorage fs("RuneParam.yml", cv::FileStorage::READ);
     fs["brightness_thresh"] >> runeParam.brightness_thresh;

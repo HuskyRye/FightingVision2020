@@ -19,7 +19,7 @@
 
 CameraParam cameraParam;
 
-void LoadCameraParam()
+void CameraParam::LoadCameraParam()
 {
     cv::FileStorage fs("CameraParam.yml", cv::FileStorage::READ);
     fs["camera_type"] >> cameraParam.camera_type;

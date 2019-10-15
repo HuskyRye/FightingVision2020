@@ -15,16 +15,16 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FightingCameraCapture.h"
+#include "FightingDahuaCapture.h"
 
 using namespace Dahua::GenICam;
 using namespace Dahua::Infra;
 
-FightingCameraCapture::FightingCameraCapture()
+FightingDahuaCapture::FightingDahuaCapture()
 {
 }
 
-FightingCameraCapture::~FightingCameraCapture()
+FightingDahuaCapture::~FightingDahuaCapture()
 {
     if (streamPtr && streamPtr->isGrabbing() && !streamPtr->stopGrabbing())
         printf("StopGrabbing fail. \n");
@@ -32,7 +32,7 @@ FightingCameraCapture::~FightingCameraCapture()
         printf("DisConnect camera fail.\n");
 }
 
-bool FightingCameraCapture::init()
+bool FightingDahuaCapture::init()
 {
     /* 发现设备 */
     CSystem& systemObj = CSystem::getInstance();
@@ -99,7 +99,7 @@ bool FightingCameraCapture::init()
     return true;
 }
 
-bool FightingCameraCapture::read(cv::Mat& image)
+bool FightingDahuaCapture::read(cv::Mat& image)
 {
     double start = static_cast<double>(cv::getTickCount());
     while (imageQueue.empty()) {
@@ -132,7 +132,7 @@ void grabbingCallback(const CFrame& pFrame, const void* pUser)
     }
 
     cv::Mat image = cv::Mat(pFrame.getImageHeight(), pFrame.getImageWidth(), CV_8UC3, (uint8_t*)pBGRbuffer);
-    FightingCameraCapture* capture = (FightingCameraCapture*)pUser;
+    FightingDahuaCapture* capture = (FightingDahuaCapture*)pUser;
     capture->imageQueue.push(image.clone());
     delete[] pBGRbuffer;
 }

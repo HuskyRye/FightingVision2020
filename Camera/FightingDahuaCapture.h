@@ -15,20 +15,35 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FightingSimpleCapture.h"
+#pragma once
 
-FightingSimpleCapture::FightingSimpleCapture(int camera_id)
-{
-    capture.open(camera_id);
-    capture.set(cv::CAP_PROP_EXPOSURE, -7);
-}
+#include "FightingCapture.h"
 
-bool FightingSimpleCapture::init()
-{
-    return capture.isOpened();
-}
+#include "GenICam/Camera.h"
+#include "GenICam/StreamSource.h"
+#include "GenICam/System.h"
+#include "ImageConvert.h"
 
-bool FightingSimpleCapture::read(cv::Mat& image)
-{
-    return capture.read(image);
-}
+#include "CircularQueue.h"
+#include "FightingCameraParam.h"
+
+using namespace Dahua::GenICam;
+
+class FightingDahuaCapture : public FightingCapture {
+public:
+    FightingDahuaCapture();
+    ~FightingDahuaCapture();
+
+    bool init() final;
+    bool read(cv::Mat& image) final;
+
+    friend void grabbingCallback(const CFrame& pFrame, const void* pUser);
+
+private:
+    ICameraPtr cameraSptr;
+    IStreamSourcePtr streamPtr;
+
+    CircularQueue<cv::Mat, 3> imageQueue;
+};
+
+void grabbingCallback(const CFrame& pFrame, const void* pUser);

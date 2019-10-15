@@ -19,10 +19,10 @@
 
 #include "FightingCapture.h"
 
-class FightingSimpleCapture : public FightingCapture {
+class FightingUSBCapture : public FightingCapture {
 public:
-    FightingSimpleCapture(int camera_id);
-    ~FightingSimpleCapture() = default;
+    FightingUSBCapture(int camera_id);
+    ~FightingUSBCapture() = default;
 
     bool init() final;
     bool read(cv::Mat& image) final;

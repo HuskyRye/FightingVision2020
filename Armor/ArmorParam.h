@@ -35,7 +35,8 @@ struct ArmorParam {
     float small_armor_width;
     float big_armor_width;
     float armor_height;
+
+    void LoadArmorParam();
 };
 
 extern ArmorParam armorParam;
-void LoadArmorParam();

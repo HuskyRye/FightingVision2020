@@ -23,15 +23,20 @@ enum class State { ARMOR_STATE,
 int main(int argc, char* argv[])
 {
     /* Video source */
-    LoadCameraParam();
+    cameraParam.LoadCameraParam();
+    std::cout << "name" << cameraParam.camera_name;
     FightingCapture* capture;
     if (cameraParam.camera_type == "Dahua")
-        capture = new FightingCameraCapture();
+        capture = new FightingDahuaCapture();
     else if (cameraParam.camera_type == "USB")
-        capture = new FightingSimpleCapture(0);
-    else
-        capture = new FightingVideoCapture("D:\\大学\\RoboMaster\\RM2019能量机关视频\\Big_Blue_Light.mov");
-    if (!capture->init()) {
+        capture = new FightingUSBCapture(stoi(cameraParam.camera_name));
+    else if (cameraParam.camera_type == "Video")
+        capture = new FightingVideoCapture(cameraParam.camera_name);
+    else {
+        printf("Invalid Camera Type.\n");
+        return 1;
+    }
+    if (capture && !capture->init()) {
         printf("Video source initialization failed.\n");
         return 1;
     }
@@ -49,8 +54,8 @@ int main(int argc, char* argv[])
     Protocol protocol(serial_port);
 
     /* Armor and Rune */
-    LoadArmorParam();
-    LoadRuneParam();
+    armorParam.LoadArmorParam();
+    runeParam.LoadRuneParam();
     State current_state = State::RUNE_STATE;
     ArmorDetector armor_detector;
     RuneDetector rune_detector;

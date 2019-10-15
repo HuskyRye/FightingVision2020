@@ -1,10 +1,16 @@
 ﻿# CMakeList.txt: FightingVision2020 的 CMake 项目，在此处包括源代码并定义项目特定的逻辑。
 
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.5)
 
+project(FightingVision2020)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${CMAKE_SYSTEM_NAME}")
 
-find_package(OpenCV REQUIRED)
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+	set(OpenCV_DIR C:/opencv/build)
+endif()
+
+find_package(OpenCV 4 REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/Camera/Include)
 
@@ -13,8 +19,8 @@ set(SRC
     "SerialPort/SerialPort.cpp"
     "SerialPort/Protocol.cpp"
     "Camera/FightingVideoCapture.cpp"
-    "Camera/FightingCameraCapture.cpp"
-    "Camera/FightingSimpleCapture.cpp"
+    "Camera/FightingDahuaCapture.cpp"
+    "Camera/FightingUSBCapture.cpp"
 	"Camera/FightingCameraParam.cpp"
     "Armor/ArmorDetector.cpp"
 	"Armor/ArmorParam.cpp"
