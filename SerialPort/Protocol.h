@@ -24,7 +24,7 @@ class Protocol {
 public:
     explicit Protocol(SerialPort& serial_port);
     ~Protocol();
-    void sendTarget(cv::Point3f& target_3d);
+    void sendTarget(cv::Point3f& target);
 private:
     SerialPort& serial_port_;
 };

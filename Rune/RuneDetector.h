@@ -18,8 +18,7 @@
 #pragma once
 
 #include "opencv2/opencv.hpp"
-#include "../Camera/FightingCameraParam.h"
-#include "RuneParam.h"
+#include "../Config/FightingParam.h"
 
 class RuneDetector {
 public:

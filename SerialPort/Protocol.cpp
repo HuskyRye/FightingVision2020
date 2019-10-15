@@ -27,7 +27,7 @@ Protocol::~Protocol()
 {
 }
 
-void Protocol::sendTarget(cv::Point3f& target_3d)
+void Protocol::sendTarget(cv::Point3f& target)
 {
     union turn {
         float d;
@@ -36,17 +36,17 @@ void Protocol::sendTarget(cv::Point3f& target_3d)
     unsigned char uart_data[16];
     uart_data[0] = 0x03;
     uart_data[1] = 0xFC;
-    t.d = target_3d.x;
+    t.d = target.x;
     uart_data[2] = t.data[0];
     uart_data[3] = t.data[1];
     uart_data[4] = t.data[2];
     uart_data[5] = t.data[3];
-    t.d = target_3d.y;
+    t.d = target.y;
     uart_data[6] = t.data[0];
     uart_data[7] = t.data[1];
     uart_data[8] = t.data[2];
     uart_data[9] = t.data[3];
-    t.d = target_3d.z;
+    t.d = target.z;
     uart_data[10] = t.data[0];
     uart_data[11] = t.data[1];
     uart_data[12] = t.data[2];

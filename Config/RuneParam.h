@@ -18,25 +18,18 @@
 #pragma once
 
 #include "opencv2/opencv.hpp"
+#include "FightingParam.h"
 
-struct ArmorParam {
-    // DetectLights
+struct RuneParam : FightingParam {
+    // ArmorDetector
     float brightness_thresh;
-    float blue_thresh, red_thresh;
-    float light_min_area;
-
-    // DetectArmors
-    float armor_max_angle_diff;
-    float armor_max_aspect_ratio;
-    float armor_max_height_ratio;
     float armor_min_area;
 
     // ArmorSize
-    float small_armor_width;
-    float big_armor_width;
+    float armor_width;
     float armor_height;
 
-    void LoadArmorParam();
+    void LoadParam() final;
 };
 
-extern ArmorParam armorParam;
+extern RuneParam runeParam;

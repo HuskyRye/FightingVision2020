@@ -18,8 +18,7 @@
 #pragma once
 
 #include "opencv2/opencv.hpp"
-#include "../Camera/FightingCameraParam.h"
-#include "ArmorParam.h"
+#include "../Config/FightingParam.h"
 
 class ArmorInfo {
 public:
@@ -39,7 +38,7 @@ class ArmorDetector {
 public:
     ArmorDetector();
     ~ArmorDetector();
-    bool DetectArmor(cv::Mat& src, cv::Point3f& target_3d);
+    bool DetectArmor(cv::Mat& src, cv::Point3f& target);
 
 private:
     bool enable_debug;

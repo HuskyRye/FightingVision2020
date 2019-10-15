@@ -17,19 +17,30 @@
 
 #pragma once
 
-#include <iostream>
+#include "opencv2/opencv.hpp"
+#include "FightingParam.h"
 
-#include <opencv2/opencv.hpp>
+struct CameraParam : FightingParam{
+    std::string camera_type;
+    std::string camera_name;
 
-#include "Camera/FightingCapture.h"
-#include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingDahuaCapture.h"
-#include "Camera/FightingUSBCapture.h"
+    cv::Mat camera_matrix;
+    cv::Mat camera_distortion;
 
-#include "SerialPort/SerialPort.h"
-#include "SerialPort/Protocol.h"
+    int resolution_width;
+    int resolution_height;
 
-#include "Armor/ArmorDetector.h"
-#include "Rune/RuneDetector.h"
+    bool auto_exposure;
+    double exposure_time;
+    double frame_rate;
+    int brightness;
 
-#include "Config/FightingParam.h"
+    bool auto_white_balance; // TODO: config this in FightingDahuaCapture.cpp
+    double balance_ratio_red;
+    double balance_ratio_green;
+    double balance_ratio_blue;
+
+    void LoadParam() final;
+};
+
+extern CameraParam cameraParam;

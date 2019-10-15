@@ -23,7 +23,7 @@ enum class State { ARMOR_STATE,
 int main(int argc, char* argv[])
 {
     /* Video source */
-    cameraParam.LoadCameraParam();
+    cameraParam.LoadParam();
     FightingCapture* capture;
     if (cameraParam.camera_type == "Dahua")
         capture = new FightingDahuaCapture();
@@ -41,11 +41,8 @@ int main(int argc, char* argv[])
     }
 
     /* SerialPort */
-#ifdef Windows
-    SerialPort serial_port("COM1");
-#elif defined Linux
-    SerialPort serial_port("/dev/ttyUSB0");
-#endif
+    serialParam.LoadParam();
+    SerialPort serial_port(serialParam.port_name.c_str());
     if (!serial_port.Init()) {
         printf("Serial_port initialization failed.\n");
         return 1;
@@ -53,8 +50,8 @@ int main(int argc, char* argv[])
     Protocol protocol(serial_port);
 
     /* Armor and Rune */
-    armorParam.LoadArmorParam();
-    runeParam.LoadRuneParam();
+    armorParam.LoadParam();
+    runeParam.LoadParam();
     State current_state = State::RUNE_STATE;
     ArmorDetector armor_detector;
     RuneDetector rune_detector;
@@ -67,7 +64,8 @@ int main(int argc, char* argv[])
                 protocol.sendTarget(target);
             // cv::imshow("src", src);
             // cv::waitKey(0);
-        }
+        } else
+            break;
     }
     return 0;
 }

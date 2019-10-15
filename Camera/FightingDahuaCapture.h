@@ -25,7 +25,7 @@
 #include "ImageConvert.h"
 
 #include "CircularQueue.h"
-#include "FightingCameraParam.h"
+#include "../Config/FightingParam.h"
 
 using namespace Dahua::GenICam;
 

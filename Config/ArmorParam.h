@@ -17,19 +17,27 @@
 
 #pragma once
 
-#include <iostream>
+#include "opencv2/opencv.hpp"
+#include "FightingParam.h"
 
-#include <opencv2/opencv.hpp>
+struct ArmorParam : FightingParam{
+    // DetectLights
+    float brightness_thresh;
+    float blue_thresh, red_thresh;
+    float light_min_area;
 
-#include "Camera/FightingCapture.h"
-#include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingDahuaCapture.h"
-#include "Camera/FightingUSBCapture.h"
+    // DetectArmors
+    float armor_max_angle_diff;
+    float armor_max_aspect_ratio;
+    float armor_max_height_ratio;
+    float armor_min_area;
 
-#include "SerialPort/SerialPort.h"
-#include "SerialPort/Protocol.h"
+    // ArmorSize
+    float small_armor_width;
+    float big_armor_width;
+    float armor_height;
 
-#include "Armor/ArmorDetector.h"
-#include "Rune/RuneDetector.h"
+    void LoadParam() final;
+};
 
-#include "Config/FightingParam.h"
+extern ArmorParam armorParam;

@@ -15,16 +15,13 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
+struct FightingParam {
+    virtual void LoadParam() = 0;
+};
+
+#include "CameraParam.h"
+#include "ArmorParam.h"
 #include "RuneParam.h"
-
-RuneParam runeParam;
-
-void RuneParam::LoadRuneParam()
-{
-    cv::FileStorage fs("RuneParam.yml", cv::FileStorage::READ);
-    fs["brightness_thresh"] >> runeParam.brightness_thresh;
-    fs["armor_min_area"] >> runeParam.armor_min_area;
-    fs["big_armor_width"] >> runeParam.armor_width;
-    fs["armor_height"] >> runeParam.armor_height;
-    fs.release();
-}
+#include "SerialParam.h"

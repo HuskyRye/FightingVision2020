@@ -15,21 +15,13 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "SerialParam.h"
 
-#include <iostream>
+SerialParam serialParam;
 
-#include <opencv2/opencv.hpp>
-
-#include "Camera/FightingCapture.h"
-#include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingDahuaCapture.h"
-#include "Camera/FightingUSBCapture.h"
-
-#include "SerialPort/SerialPort.h"
-#include "SerialPort/Protocol.h"
-
-#include "Armor/ArmorDetector.h"
-#include "Rune/RuneDetector.h"
-
-#include "Config/FightingParam.h"
+void SerialParam::LoadParam()
+{
+    cv::FileStorage fs("SerialParam.yml", cv::FileStorage::READ);
+    fs["port_name"] >> serialParam.port_name;
+    fs.release();
+}

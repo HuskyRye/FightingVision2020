@@ -21,11 +21,12 @@ set(SRC
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingDahuaCapture.cpp"
     "Camera/FightingUSBCapture.cpp"
-	"Camera/FightingCameraParam.cpp"
     "Armor/ArmorDetector.cpp"
-	"Armor/ArmorParam.cpp"
     "Rune/RuneDetector.cpp"
-	"Rune/RuneParam.cpp"
+	"Config/CameraParam.cpp"
+	"Config/ArmorParam.cpp"
+	"Config/RuneParam.cpp"
+	"Config/SerialParam.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})
@@ -41,6 +42,7 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libImageConvert.so" )
 endif()
 
-file(COPY "${PROJECT_SOURCE_DIR}/Camera/CameraParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
-file(COPY "${PROJECT_SOURCE_DIR}/Armor/ArmorParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
-file(COPY "${PROJECT_SOURCE_DIR}/Rune/RuneParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Config/CameraParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Config/ArmorParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Config/RuneParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Config/SerialParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)

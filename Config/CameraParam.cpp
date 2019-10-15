@@ -15,11 +15,11 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FightingCameraParam.h"
+#include "CameraParam.h"
 
 CameraParam cameraParam;
 
-void CameraParam::LoadCameraParam()
+void CameraParam::LoadParam()
 {
     cv::FileStorage fs("CameraParam.yml", cv::FileStorage::READ);
     fs["camera_type"] >> cameraParam.camera_type;
