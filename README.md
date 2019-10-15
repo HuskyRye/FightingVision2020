@@ -11,7 +11,6 @@ An open source vision software for RoboMaster2020
 |-|-|-|
 |刘臣轩|代码框架与视觉识别|1412167533|
 |赵桐|相机驱动|783944621|
-|刘志磊|something|-|
 
 ---
 
