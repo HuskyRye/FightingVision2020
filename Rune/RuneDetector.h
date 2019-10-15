@@ -25,7 +25,7 @@ class RuneDetector {
 public:
     RuneDetector();
     ~RuneDetector();
-    bool DetectRune(cv::Mat& src, cv::Point3f& target_3d);
+    bool DetectRune(cv::Mat& src, cv::Point3f& target);
 
 private:
     bool enable_debug;

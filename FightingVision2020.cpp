@@ -24,7 +24,6 @@ int main(int argc, char* argv[])
 {
     /* Video source */
     cameraParam.LoadCameraParam();
-    std::cout << "name" << cameraParam.camera_name;
     FightingCapture* capture;
     if (cameraParam.camera_type == "Dahua")
         capture = new FightingDahuaCapture();
