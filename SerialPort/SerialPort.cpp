@@ -170,10 +170,10 @@ bool SerialPort::OpenDevice()
 #else
     serial_fd_ = open(port_name_, O_RDWR | O_NOCTTY);
 #endif
-    if (serial_fd_ < 0) {
+    if (serial_fd_ < 0)
         return false;
+    else
         return true;
-    }
 }
 
 bool SerialPort::CloseDevice()
