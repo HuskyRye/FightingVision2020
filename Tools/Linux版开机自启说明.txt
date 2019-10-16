@@ -1,14 +1,11 @@
 1.将 FightingVision2020.service 复制到 /ect/systemd/system/
 2.将 FightingVision2020.sh 复制到 /bin/
 3.修改 FightingVision2020.sh 中的程序绝对路径
-3.sudo chmod +x /bin/xxx.sh
+3.sudo chmod +x /bin/FightingVision2020.sh
 4.重新加载配置文件 sudo systemctl daemon-reload
-5.添加开机自启 systemctl enable xxx.service
+5.添加开机自启 systemctl enable FightingVision2020.service
 6.sudo reboot
 
-ps:
-systemctl status xxx.service （服务详细信息）
-systemctl is-active xxx.service (仅显示是否 Active)
-注意不要直接从Windows复制代码（虚拟机）
-请直接复制.sh 和 .service文件再修改
-
+Status:
+systemctl status FightingVision2020.service （服务详细信息）
+systemctl is-active FightingVision2020.service (仅显示是否 Active)
