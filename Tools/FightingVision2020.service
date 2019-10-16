@@ -4,7 +4,7 @@ Description=...
 
 [Service]
 
-Execstart=/bin/FightingVision2020.sh
+ExecStart=/bin/FightingVision2020.sh
 Restart=always
 Type=simple
 
