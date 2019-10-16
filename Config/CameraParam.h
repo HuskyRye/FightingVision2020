@@ -35,7 +35,7 @@ struct CameraParam : FightingParam{
     double frame_rate;
     int brightness;
 
-    bool auto_white_balance; // TODO: config this in FightingDahuaCapture.cpp
+    bool auto_white_balance;
     double balance_ratio_red;
     double balance_ratio_green;
     double balance_ratio_blue;

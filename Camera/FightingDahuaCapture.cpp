@@ -64,6 +64,7 @@ bool FightingDahuaCapture::init()
     CDoubleNode nodeExposureTime = sptrAcquisitionControl->exposureTime();
     CDoubleNode nodeFrameRate = sptrAcquisitionControl->acquisitionFrameRate();
     CIntNode nodeBrightness = sptrISPControl->brightness();
+    CEnumNode nodeExposureAuto = sptrAcquisitionControl->exposureAuto();
     CEnumNode nodeBalanceRatioSection = sptrAnalogControl->balanceRatioSelector();
     CDoubleNode nodeBalanceRatio = sptrAnalogControl->balanceRatio();
 
@@ -74,6 +75,7 @@ bool FightingDahuaCapture::init()
     nodeExposureTime.setValue(cameraParam.exposure_time);
     nodeFrameRate.setValue(cameraParam.frame_rate);
     nodeBrightness.setValue(cameraParam.brightness);
+    nodeExposureAuto.setValue(cameraParam.auto_exposure);
     nodeBalanceRatioSection.setValue(0);
     nodeBalanceRatio.setValue(cameraParam.balance_ratio_red);
     nodeBalanceRatioSection.setValue(1);
