@@ -22,7 +22,7 @@ ArmorDetector::ArmorDetector()
 {
     // TODO: 从串口读取的数据
     enemy_color = EnemyColor::BLUE;
-    enable_debug = true;
+    enable_debug = false;
 }
 
 ArmorDetector::~ArmorDetector()

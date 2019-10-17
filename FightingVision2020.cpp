@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     /* Armor and Rune */
     armorParam.LoadParam();
     runeParam.LoadParam();
-    State current_state = State::RUNE_STATE;
+    State current_state = State::ARMOR_STATE;
     ArmorDetector armor_detector;
     RuneDetector rune_detector;
     cv::Mat src;
