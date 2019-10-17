@@ -28,7 +28,6 @@ set(SRC
     "Config/CameraParam.cpp"
     "Config/ArmorParam.cpp"
     "Config/RuneParam.cpp"
-    "Config/SerialParam.cpp"
 )
 
 add_executable (FightingVision2020 ${SRC})
@@ -47,4 +46,3 @@ endif()
 file(COPY "${PROJECT_SOURCE_DIR}/Config/CameraParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
 file(COPY "${PROJECT_SOURCE_DIR}/Config/ArmorParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
 file(COPY "${PROJECT_SOURCE_DIR}/Config/RuneParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
-file(COPY "${PROJECT_SOURCE_DIR}/Config/SerialParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
