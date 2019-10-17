@@ -24,4 +24,3 @@ struct FightingParam {
 #include "CameraParam.h"
 #include "ArmorParam.h"
 #include "RuneParam.h"
-#include "SerialParam.h"
