@@ -1,6 +1,6 @@
 /**
 * @file   ImageConvert.h
-* @brief  Í¼Ïñ¸ñÊ½×ª»».
+* @brief  å›¾åƒæ ¼å¼è½¬æ¢.
 * @author 
 * @par    Copyright (c):
 *         All Rights Reserved
@@ -18,9 +18,9 @@ extern "C"{
 #undef WIN32
 #endif
 
-	/** ±àÒëÑ¡Ïî */
-#ifdef WIN32  // win64Î»ÏÂ£¬»á±¨ºÍdefÖØ¸´¶¨ÒåµÄ¾¯¸æ In Win 64bit, it will report warning for duplicate definition
-#  ifdef _USRDLL // ¶¯Ì¬¿âµ¼³ö Export DLL
+	/** ç¼–è¯‘é€‰é¡¹ */
+#ifdef WIN32  // win64ä½ä¸‹ï¼Œä¼šæŠ¥å’Œdefé‡å¤å®šä¹‰çš„è­¦å‘Š In Win 64bit, it will report warning for duplicate definition
+#  ifdef _USRDLL // åŠ¨æ€åº“å¯¼å‡º Export DLL
 #    ifdef IMAGECONVERT_EXPORTS
 #		define IMGCNV_API __declspec(dllexport)
 #	 else
@@ -39,270 +39,270 @@ extern "C"{
 #	define CALLMETHOD
 #endif // end #if (defined (WIN32) || defined(WIN64))
 
-	typedef void* IMGCNV_HANDLE;        ///< ×ªÂëAPIÊ¹ÓÃµÄ¾ä±ú Handle for using conversion API
+	typedef void* IMGCNV_HANDLE;        ///< è½¬ç APIä½¿ç”¨çš„å¥æŸ„ Handle for using conversion API
 
 	/**
 	* @enum IMGCNV_EErr
-	* @brief ½Ó¿Ú·µ»ØÖµ Return value
-	* @attention ÎŞ No
+	* @brief æ¥å£è¿”å›å€¼ Return value
+	* @attention æ—  No
 	*/
 	typedef enum tagIMGCNV_EErr
 	{
 		IMGCNV_SUCCESS,
-		IMGCNV_ILLEGAL_PARAM,			 ///< ·Ç·¨²ÎÊı Illegal parameter
-		IMGCNV_ERR_ORDER,                ///< µ÷ÓÃ½Ó¿ÚË³Ğò´íÎó Sequence error for calling interfaces
-		IMGCNV_NO_MEMORY,				 ///< ÄÚ´æ²»×ã No memory
-		IMGCNV_NOT_SUPPORT,              ///< ²»Ö§³Ö   Not support
+		IMGCNV_ILLEGAL_PARAM,			 ///< éæ³•å‚æ•° Illegal parameter
+		IMGCNV_ERR_ORDER,                ///< è°ƒç”¨æ¥å£é¡ºåºé”™è¯¯ Sequence error for calling interfaces
+		IMGCNV_NO_MEMORY,				 ///< å†…å­˜ä¸è¶³ No memory
+		IMGCNV_NOT_SUPPORT,              ///< ä¸æ”¯æŒ   Not support
 	}IMGCNV_EErr;
 
 	typedef struct tagIMGCNV_SOpenParam
 	{
-		int width;							///< Í¼Ïñ¿í Image width
-		int height;							///< Í¼Ïñ¸ß Image Height
-		int paddingX;						///< Í¼Ïñ¿íÌî³ä Padding X
-		int paddingY;						///< Í¼Ïñ¸ßÌî³ä Padding Y
-		int dataSize;						///< Í¼Ïñ´óĞ¡   Image size
-		unsigned int pixelForamt;			///< Ô´Í¼ÏñµÄÍ¼Ïñ¸ñÊ½ Image format of source image
+		int width;							///< å›¾åƒå®½ Image width
+		int height;							///< å›¾åƒé«˜ Image Height
+		int paddingX;						///< å›¾åƒå®½å¡«å…… Padding X
+		int paddingY;						///< å›¾åƒé«˜å¡«å…… Padding Y
+		int dataSize;						///< å›¾åƒå¤§å°   Image size
+		unsigned int pixelForamt;			///< æºå›¾åƒçš„å›¾åƒæ ¼å¼ Image format of source image
 	}IMGCNV_SOpenParam;
 
 	typedef enum tagIMGCNV_EBayerDemosaic
 	{
-		IMGCNV_DEMOSAIC_NEAREST_NEIGHBOR,		 ///< ×î½üÁÚ Nearest neighbor
-		IMGCNV_DEMOSAIC_BILINEAR,				 ///< Ë«ÏßĞÔ Bilinear
-		IMGCNV_DEMOSAIC_EDGE_SENSING,			 ///< ±ßÔµ¼ì²â Edge sensing
-		IMGCNV_DEMOSAIC_NOT_SUPPORT = 255,       ///< ²»Ö§³Ö Not support
+		IMGCNV_DEMOSAIC_NEAREST_NEIGHBOR,		 ///< æœ€è¿‘é‚» Nearest neighbor
+		IMGCNV_DEMOSAIC_BILINEAR,				 ///< åŒçº¿æ€§ Bilinear
+		IMGCNV_DEMOSAIC_EDGE_SENSING,			 ///< è¾¹ç¼˜æ£€æµ‹ Edge sensing
+		IMGCNV_DEMOSAIC_NOT_SUPPORT = 255,       ///< ä¸æ”¯æŒ Not support
 	}IMGCNV_EBayerDemosaic;
 
 	/**
     *  ~chinese  
-	*  @brief  ×ª»»ÎªBGR24µÄ×ª»»º¯Êı
-	*  @param[in] pSrcData		£ºÔ´Êı¾İ
-	*  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-	*  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ	
-	*  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È	
-	*  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-	*  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-	*  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-	*  ÌØ±ğËµÃ÷
-	*  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+	*  @brief  è½¬æ¢ä¸ºBGR24çš„è½¬æ¢å‡½æ•°
+	*  @param[in] pSrcData		ï¼šæºæ•°æ®
+	*  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+	*  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®	
+	*  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦	
+	*  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+	*  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+	*  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+	*  ç‰¹åˆ«è¯´æ˜
+	*  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
 	*  ~english  
 	*  @brief  convert to BGR24
-	*  @param[in] pSrcData		£ºsource data
-	*  @param[in] pOpenParam	£ºconversion required paraneters
-	*  @param[out]pDstData		£ºconverted data
-	*  @param[out]pDstDataSize	£ºlength of converted data 
+	*  @param[in] pSrcData		ï¼šsource data
+	*  @param[in] pOpenParam	ï¼šconversion required paraneters
+	*  @param[out]pDstData		ï¼šconverted data
+	*  @param[out]pDstDataSize	ï¼šlength of converted data 
 	*  @Return:   IMGCNV_ERR_E	:return value
 	*  - IMGCNV_SUCCESS return ok
 	*  - Other values refers to enumeration of IMGCNV_ERR_E 
 	*  Special note
 	*  pixelFormat:YUV411Packed,the image width is divisible by 4
 	*  pixelFormat:YUV422Packed,the image width is divisible by 2
-	*  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-	*  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+	*  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+	*  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
 	*/
 	IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToBGR24(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize);
 
 	/**
     *  ~chinese  
-	*  @brief  ×ª»»ÎªRGB24µÄ×ª»»º¯Êı
-	*  @param[in] pSrcData		£ºÔ´Êı¾İ
-	*  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-	*  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ	
-	*  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È	
-	*  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-	*  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-	*  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-	*  ÌØ±ğËµÃ÷
-	*  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+	*  @brief  è½¬æ¢ä¸ºRGB24çš„è½¬æ¢å‡½æ•°
+	*  @param[in] pSrcData		ï¼šæºæ•°æ®
+	*  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+	*  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®	
+	*  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦	
+	*  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+	*  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+	*  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+	*  ç‰¹åˆ«è¯´æ˜
+	*  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
 	*  ~english  
 	*  @brief  convert to RGB24
-	*  @param[in] pSrcData		£ºsource data
-	*  @param[in] pOpenParam	£ºconversion required paraneters
-	*  @param[out]pDstData		£ºconverted data
-	*  @param[out]pDstDataSize	£ºlength of converted data 
+	*  @param[in] pSrcData		ï¼šsource data
+	*  @param[in] pOpenParam	ï¼šconversion required paraneters
+	*  @param[out]pDstData		ï¼šconverted data
+	*  @param[out]pDstDataSize	ï¼šlength of converted data 
 	*  @Return:   IMGCNV_ERR_E	:return value
 	*  - IMGCNV_SUCCESS return ok
 	*  - Other values refers to enumeration of IMGCNV_ERR_E 
 	*  Special note
 	*  pixelFormat:YUV411Packed,the image width is divisible by 4
 	*  pixelFormat:YUV422Packed,the image width is divisible by 2
-	*  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-	*  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+	*  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+	*  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
 	*/
 	IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToRGB24(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize);
 
 	/**
 	*  ~chinese
-	*  @brief  ×ª»»ÎªMono8µÄ×ª»»º¯Êı
-	*  @param[in] pSrcData		£ºÔ´Êı¾İ
-	*  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-	*  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ
-	*  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È
-	*  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-	*  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-	*  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-	*  ÌØ±ğËµÃ÷
-	*  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+	*  @brief  è½¬æ¢ä¸ºMono8çš„è½¬æ¢å‡½æ•°
+	*  @param[in] pSrcData		ï¼šæºæ•°æ®
+	*  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+	*  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®
+	*  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦
+	*  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+	*  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+	*  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+	*  ç‰¹åˆ«è¯´æ˜
+	*  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
 	*  ~english
 	*  @brief  convert to Mono8
-	*  @param[in] pSrcData		£ºsource data
-	*  @param[in] pOpenParam	£ºconversion required paraneters
-	*  @param[out]pDstData		£ºconverted data
-	*  @param[out]pDstDataSize	£ºlength of converted data
+	*  @param[in] pSrcData		ï¼šsource data
+	*  @param[in] pOpenParam	ï¼šconversion required paraneters
+	*  @param[out]pDstData		ï¼šconverted data
+	*  @param[out]pDstDataSize	ï¼šlength of converted data
 	*  @Return:   IMGCNV_ERR_E	:return value
 	*  - IMGCNV_SUCCESS return ok
 	*  - Other values refers to enumeration of IMGCNV_ERR_E
 	*  Special note
 	*  pixelFormat:YUV411Packed,the image width is divisible by 4
 	*  pixelFormat:YUV422Packed,the image width is divisible by 2
-	*  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-	*  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+	*  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+	*  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
 	*/
 	IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToMono8(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize);
 
 	/**
 	*  ~chinese
-	*  @brief  ×ª»»ÎªBGR24µÄ×ª»»º¯Êı
-	*  @param[in] pSrcData		£ºÔ´Êı¾İ
-	*  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-	*  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ
-	*  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È
-	*  @param[in]eBayerDemosaic £ºÑ¡Ôñ×ª»»Bayer¸ñÊ½ËùÓÃµÄËã·¨
-	*  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-	*  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-	*  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-	*  ÌØ±ğËµÃ÷
-	*  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+	*  @brief  è½¬æ¢ä¸ºBGR24çš„è½¬æ¢å‡½æ•°
+	*  @param[in] pSrcData		ï¼šæºæ•°æ®
+	*  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+	*  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®
+	*  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦
+	*  @param[in]eBayerDemosaic ï¼šé€‰æ‹©è½¬æ¢Bayeræ ¼å¼æ‰€ç”¨çš„ç®—æ³•
+	*  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+	*  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+	*  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+	*  ç‰¹åˆ«è¯´æ˜
+	*  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
 	*  ~english
 	*  @brief  convert to BGR24
-	*  @param[in] pSrcData		£ºsource data
-	*  @param[in] pOpenParam	£ºconversion required paraneters
-	*  @param[out]pDstData		£ºconverted data
-	*  @param[out]pDstDataSize	£ºlength of converted data
-	*  @param[in]eBayerDemosaic £ºalorithm used for Bayer demosaic
+	*  @param[in] pSrcData		ï¼šsource data
+	*  @param[in] pOpenParam	ï¼šconversion required paraneters
+	*  @param[out]pDstData		ï¼šconverted data
+	*  @param[out]pDstDataSize	ï¼šlength of converted data
+	*  @param[in]eBayerDemosaic ï¼šalorithm used for Bayer demosaic
 	*  @Return:   IMGCNV_ERR_E	:return value
 	*  - IMGCNV_SUCCESS return ok
 	*  - Other values refers to enumeration of IMGCNV_ERR_E
 	*  Special note
 	*  pixelFormat:YUV411Packed,the image width is divisible by 4
 	*  pixelFormat:YUV422Packed,the image width is divisible by 2
-	*  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-	*  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+	*  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+	*  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
 	*/
 	IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToBGR24_Ex(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize, IMGCNV_EBayerDemosaic eBayerDemosaic);
 
 	/**
 	*  ~chinese
-	*  @brief  ×ª»»ÎªRGB24µÄ×ª»»º¯Êı
-	*  @param[in] pSrcData		£ºÔ´Êı¾İ
-	*  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-	*  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ
-	*  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È
-	*  @param[in]eBayerDemosaic £ºÑ¡Ôñ×ª»»Bayer¸ñÊ½ËùÓÃµÄËã·¨
-	*  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-	*  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-	*  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-	*  ÌØ±ğËµÃ÷
-	*  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+	*  @brief  è½¬æ¢ä¸ºRGB24çš„è½¬æ¢å‡½æ•°
+	*  @param[in] pSrcData		ï¼šæºæ•°æ®
+	*  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+	*  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®
+	*  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦
+	*  @param[in]eBayerDemosaic ï¼šé€‰æ‹©è½¬æ¢Bayeræ ¼å¼æ‰€ç”¨çš„ç®—æ³•
+	*  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+	*  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+	*  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+	*  ç‰¹åˆ«è¯´æ˜
+	*  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
 	*  ~english
 	*  @brief  convert to RGB24
-	*  @param[in] pSrcData		£ºsource data
-	*  @param[in] pOpenParam	£ºconversion required paraneters
-	*  @param[out]pDstData		£ºconverted data
-	*  @param[out]pDstDataSize	£ºlength of converted data
-	*  @param[in]eBayerDemosaic £ºalorithm used for Bayer demosaic
+	*  @param[in] pSrcData		ï¼šsource data
+	*  @param[in] pOpenParam	ï¼šconversion required paraneters
+	*  @param[out]pDstData		ï¼šconverted data
+	*  @param[out]pDstDataSize	ï¼šlength of converted data
+	*  @param[in]eBayerDemosaic ï¼šalorithm used for Bayer demosaic
 	*  @Return:   IMGCNV_ERR_E	:return value
 	*  - IMGCNV_SUCCESS return ok
 	*  - Other values refers to enumeration of IMGCNV_ERR_E
 	*  Special note
 	*  pixelFormat:YUV411Packed,the image width is divisible by 4
 	*  pixelFormat:YUV422Packed,the image width is divisible by 2
-	*  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-	*  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+	*  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+	*  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
 	*/
 	IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToRGB24_Ex(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize, IMGCNV_EBayerDemosaic eBayerDemosaic);
 
 	/**
 	*  ~chinese
-	*  @brief  ×ª»»ÎªMono8µÄ×ª»»º¯Êı
-	*  @param[in] pSrcData		£ºÔ´Êı¾İ
-	*  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-	*  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ
-	*  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È
-	*  @param[in]eBayerDemosaic £ºÑ¡Ôñ×ª»»Bayer¸ñÊ½ËùÓÃµÄËã·¨
-	*  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-	*  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-	*  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-	*  ÌØ±ğËµÃ÷
-	*  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-	*  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+	*  @brief  è½¬æ¢ä¸ºMono8çš„è½¬æ¢å‡½æ•°
+	*  @param[in] pSrcData		ï¼šæºæ•°æ®
+	*  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+	*  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®
+	*  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦
+	*  @param[in]eBayerDemosaic ï¼šé€‰æ‹©è½¬æ¢Bayeræ ¼å¼æ‰€ç”¨çš„ç®—æ³•
+	*  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+	*  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+	*  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+	*  ç‰¹åˆ«è¯´æ˜
+	*  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+	*  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
 	*  ~english
 	*  @brief  convert to Mono8
-	*  @param[in] pSrcData		£ºsource data
-	*  @param[in] pOpenParam	£ºconversion required paraneters
-	*  @param[out]pDstData		£ºconverted data
-	*  @param[out]pDstDataSize	£ºlength of converted data
-	*  @param[in]eBayerDemosaic £ºalorithm used for Bayer demosaic
+	*  @param[in] pSrcData		ï¼šsource data
+	*  @param[in] pOpenParam	ï¼šconversion required paraneters
+	*  @param[out]pDstData		ï¼šconverted data
+	*  @param[out]pDstDataSize	ï¼šlength of converted data
+	*  @param[in]eBayerDemosaic ï¼šalorithm used for Bayer demosaic
 	*  @Return:   IMGCNV_ERR_E	:return value
 	*  - IMGCNV_SUCCESS return ok
 	*  - Other values refers to enumeration of IMGCNV_ERR_E
 	*  Special note
 	*  pixelFormat:YUV411Packed,the image width is divisible by 4
 	*  pixelFormat:YUV422Packed,the image width is divisible by 2
-	*  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-	*  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+	*  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+	*  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
 	*/
 	IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToMono8_Ex(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize, IMGCNV_EBayerDemosaic eBayerDemosaic);
 
 
     /**
     *  ~chinese
-    *  @brief  ×ª»»ÎªBGRA32µÄ×ª»»º¯Êı
-    *  @param[in] pSrcData		£ºÔ´Êı¾İ
-    *  @param[in] pOpenParam	£ºIMGCNV_SOpenParam½á¹¹Ìå,¸ñÊ½×ª»»ËùĞèÒªµÄ²ÎÊı
-    *  @param[out]pDstData		£º×ª»»ºóµÄÊı¾İ
-    *  @param[out]pDstDataSize	£º×ª»»ºóÊı¾İµÄ³¤¶È
-    *  @param[in]eBayerDemosaic £ºÑ¡Ôñ×ª»»Bayer¸ñÊ½ËùÓÃµÄËã·¨
-    *  @Return:   IMGCNV_ERR_E  : Í¼Ïñ¸ñÊ½×ª»»½Ó¿Ú·µ»ØÖµ
-    *  - IMGCNV_SUCCESS ±íÊ¾Ö´ĞĞ³É¹¦
-    *  - ÆäËûÖµ¼ûIMGCNV_ERR_EÃ¶¾Ù
-    *  ÌØ±ğËµÃ÷
-    *  ÏñËØ¸ñÊ½ÎªYUV411PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»4Õû³ı
-    *  ÏñËØ¸ñÊ½ÎªYUV422PackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-    *  ÏñËØ¸ñÊ½ÎªYUYVPackedµÄÊ±£¬Í¼Ïñ¿íĞëÄÜ±»2Õû³ı
-    *  ×ª»»ºóµÄÍ¼Ïñ:Êı¾İ´æ´¢ÊÇ´Ó×îÉÏÃæµÚÒ»ĞĞ¿ªÊ¼µÄ£¬Õâ¸öÊÇÏà»úÊı¾İµÄÄ¬ÈÏ´æ´¢·½Ïò
+    *  @brief  è½¬æ¢ä¸ºBGRA32çš„è½¬æ¢å‡½æ•°
+    *  @param[in] pSrcData		ï¼šæºæ•°æ®
+    *  @param[in] pOpenParam	ï¼šIMGCNV_SOpenParamç»“æ„ä½“,æ ¼å¼è½¬æ¢æ‰€éœ€è¦çš„å‚æ•°
+    *  @param[out]pDstData		ï¼šè½¬æ¢åçš„æ•°æ®
+    *  @param[out]pDstDataSize	ï¼šè½¬æ¢åæ•°æ®çš„é•¿åº¦
+    *  @param[in]eBayerDemosaic ï¼šé€‰æ‹©è½¬æ¢Bayeræ ¼å¼æ‰€ç”¨çš„ç®—æ³•
+    *  @Return:   IMGCNV_ERR_E  : å›¾åƒæ ¼å¼è½¬æ¢æ¥å£è¿”å›å€¼
+    *  - IMGCNV_SUCCESS è¡¨ç¤ºæ‰§è¡ŒæˆåŠŸ
+    *  - å…¶ä»–å€¼è§IMGCNV_ERR_Eæšä¸¾
+    *  ç‰¹åˆ«è¯´æ˜
+    *  åƒç´ æ ¼å¼ä¸ºYUV411Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«4æ•´é™¤
+    *  åƒç´ æ ¼å¼ä¸ºYUV422Packedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+    *  åƒç´ æ ¼å¼ä¸ºYUYVPackedçš„æ—¶ï¼Œå›¾åƒå®½é¡»èƒ½è¢«2æ•´é™¤
+    *  è½¬æ¢åçš„å›¾åƒ:æ•°æ®å­˜å‚¨æ˜¯ä»æœ€ä¸Šé¢ç¬¬ä¸€è¡Œå¼€å§‹çš„ï¼Œè¿™ä¸ªæ˜¯ç›¸æœºæ•°æ®çš„é»˜è®¤å­˜å‚¨æ–¹å‘
     *  ~english
     *  @brief  convert to BGRA32
-    *  @param[in] pSrcData		£ºsource data
-    *  @param[in] pOpenParam	£ºconversion required paraneters
-    *  @param[out]pDstData		£ºconverted data
-    *  @param[out]pDstDataSize	£ºlength of converted data
-    *  @param[in]eBayerDemosaic £ºalorithm used for Bayer demosaic
+    *  @param[in] pSrcData		ï¼šsource data
+    *  @param[in] pOpenParam	ï¼šconversion required paraneters
+    *  @param[out]pDstData		ï¼šconverted data
+    *  @param[out]pDstDataSize	ï¼šlength of converted data
+    *  @param[in]eBayerDemosaic ï¼šalorithm used for Bayer demosaic
     *  @Return:   IMGCNV_ERR_E	:return value
     *  - IMGCNV_SUCCESS return ok
     *  - Other values refers to enumeration of IMGCNV_ERR_E
     *  Special note
     *  pixelFormat:YUV411Packed,the image width is divisible by 4
     *  pixelFormat:YUV422Packed,the image width is divisible by 2
-    *  pixelFormat:YUYVPacked£¬the image width is divisible by 2
-    *  converted image£ºThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
+    *  pixelFormat:YUYVPackedï¼Œthe image width is divisible by 2
+    *  converted imageï¼šThe first row of the image is located at the start of the image buffer.This is the default for image taken by a camera.
     */
     IMGCNV_API IMGCNV_EErr CALLMETHOD IMGCNV_ConvertToBGRA32_Ex(unsigned char* pSrcData, IMGCNV_SOpenParam* pOpenParam, unsigned char* pDstData, int* pDstDataSize, IMGCNV_EBayerDemosaic eBayerDemosaic);
 
