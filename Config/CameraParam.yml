@@ -1,7 +1,7 @@
-ï»¿%YAML:1.0
+%YAML:1.0
 ---
 camera_type: Dahua
-camera_name: 'D:\\å¤§å­¦\\RoboMaster\\RM2019èƒ½é‡æœºå…³è§†é¢‘\\Big_Blue_Light.mov'
+camera_name: 'D:\\´óÑ§\\RoboMaster\\RM2019ÄÜÁ¿»ú¹ØÊÓÆµ\\Big_Blue_Light.mov'
 camera_matrix: !!opencv-matrix
    rows: 3
    cols: 3
