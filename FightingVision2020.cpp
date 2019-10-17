@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     else if (cameraParam.camera_type == "Video")
         capture = new FightingVideoCapture(cameraParam.camera_name);
     else {
-        printf("Invalid Camera Type.\n");
+        printf("Invalid Camera Type: %s.\n", cameraParam.camera_type);
         return 1;
     }
     if (capture && !capture->init()) {
