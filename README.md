@@ -18,7 +18,7 @@ An open source vision software for RoboMaster2020
 * 计算设备：MiniPC 或 DJI Manifold 2 (兼容 intel NUC 以及 Nvidia Jetson TX1, TX2）
 * 工业摄像头：华谷动力 WP-UT130
 * 操作系统：Windows 10 64位 或 Ubuntu 16.04 ( Linux内核版本号从2.6.32到4.18.0 )
-* 运行库：OpenCV 4，MV Viewer相机驱动
+* 运行库：OpenCV 3，MV Viewer相机驱动
 * 工具链：
   * Windows 10 : CMake3 + Visual Studio 2019
   * Ubuntu 16.04 : CMake3 + GCC5
