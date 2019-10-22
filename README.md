@@ -37,7 +37,7 @@ sudo ./FightingVision2020
 
 * Windows 10
 
-## 三.开机自启部署
+## 三、开机自启部署
 
 * Ubuntu 16.04
 ```shell
