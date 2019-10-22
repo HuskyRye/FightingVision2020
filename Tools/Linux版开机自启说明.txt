@@ -1,6 +1,0 @@
-Deployment：
-sudo ./Deployment.sh
-
-Status:
-systemctl status FightingVision2020.service （服务详细信息）
-systemctl is-active FightingVision2020.service (仅显示是否 Active)
