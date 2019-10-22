@@ -37,21 +37,21 @@ sudo ./FightingVision2020
 
 * Windows 10
 
-## 三、开机自启部署
+使用 Visual Studio 2019 打开 CMake 项目，编译运行
 
-* Ubuntu 16.04
+## 三、开机自启部署（仅支持Ubuntu）
+### 部署
 ```shell
 cd Tools
 sudo ./Deployment.sh
 ```
-
-注：开机自启状态查询
+### 开机自启状态查询
 ```shell
 systemctl status FightingVision2020.service     #服务详细信息
 systemctl is-active FightingVision2020.service  #仅显示是否 Active
 ```
 
-取消部署
+### 取消部署
 ```shell
 cd Tools
 sudo ./Undeployment.sh
