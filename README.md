@@ -33,11 +33,13 @@ An open source vision software for RoboMaster2020
 # 下载 FightingVision2020 源码
 git clone https://github.com/HuskyRye/FightingVision2020.git
 cd FightingVision2020
+
 # 编译源码
 mkdir build
 cd build
 cmake ..
 make
+
 # 运行
 sudo ./FightingVision2020
 ```
