@@ -20,4 +20,4 @@ sudo cp ./FightingVision2020.service /etc/systemd/system/
 sudo cp $shdir /bin/
 sudo chmod +x /bin/FightingVision2020.sh
 sudo systemctl daemon-reload
-systemctl enable FightingVision2020.service
+sudo systemctl enable FightingVision2020.service
