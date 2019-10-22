@@ -52,7 +52,8 @@ sudo ./FightingVision2020
 ### 1.部署
 ```shell
 cd Tools
-sudo ./Deployment.sh
+sudo chmod +x ./Deploy.sh
+sudo ./Deploy.sh
 ```
 ### 2.开机自启状态查询
 ```shell
@@ -63,5 +64,6 @@ systemctl is-active FightingVision2020.service  #仅显示是否 Active
 ### 3.取消部署
 ```shell
 cd Tools
-sudo ./Undeployment.sh
+sudo chmod +x ./Undeploy.sh
+sudo ./Undeploy.sh
 ```
