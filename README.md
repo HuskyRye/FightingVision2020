@@ -9,8 +9,8 @@ An open source vision software for RoboMaster2020
 
 |作者|负责部分|QQ|
 |-|-|-|
-|刘臣轩|代码框架与视觉识别|1412167533|
-|赵桐|相机驱动|783944621|
+|刘臣轩|代码框架与视觉算法|1412167533|
+|赵桐|相机驱动与自启脚本|783944621|
 
 ---
 
@@ -26,14 +26,19 @@ An open source vision software for RoboMaster2020
 相机驱动下载地址：
 [相机驱动](http://download.huaraytech.com/pub/sdk/) ( Windows 安装 Ver2.2.2，Linux 安装 Ver2.2.1 )
 
-## 二、程序编译运行
+## 二、程序下载编译运行
 
 * Ubuntu 16.04
 ```shell
+# 下载 FightingVision2020 源码
+git clone https://github.com/HuskyRye/FightingVision2020.git
+cd FightingVision2020
+# 编译源码
 mkdir build
 cd build
 cmake ..
 make
+# 运行
 sudo ./FightingVision2020
 ```
 
