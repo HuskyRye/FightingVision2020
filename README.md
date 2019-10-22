@@ -37,7 +37,7 @@ sudo ./FightingVision2020
 
 * Windows 10
 
-使用 Visual Studio 2019 打开 CMake 项目，编译运行
+  使用 Visual Studio 2019 打开 CMake 项目，编译运行
 
 ## 三、开机自启部署（仅支持Ubuntu）
 ### 部署
