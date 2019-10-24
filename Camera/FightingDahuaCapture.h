@@ -43,7 +43,7 @@ private:
     ICameraPtr cameraSptr;
     IStreamSourcePtr streamPtr;
 
-    CircularQueue<cv::Mat, 3> imageQueue;
+    CircularQueue<cv::Mat, 5> imageQueue;
 };
 
 void grabbingCallback(const CFrame& pFrame, const void* pUser);
