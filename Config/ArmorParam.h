@@ -30,7 +30,6 @@ struct ArmorParam : FightingParam{
     float armor_max_angle_diff;
     float armor_max_aspect_ratio;
     float armor_max_height_ratio;
-    float armor_min_area;
 
     // ArmorSize
     float small_armor_width;

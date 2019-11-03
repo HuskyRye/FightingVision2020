@@ -20,20 +20,6 @@
 #include "opencv2/opencv.hpp"
 #include "../Config/FightingParam.h"
 
-class ArmorInfo {
-public:
-    explicit ArmorInfo(cv::RotatedRect armor_rect, float armor_stddev = 0.0)
-        : rect(armor_rect)
-        , stddev(armor_stddev)
-    {
-    }
-
-public:
-    cv::RotatedRect rect;
-    float stddev;
-    // TODO: classifier输出值
-};
-
 class ArmorDetector {
 public:
     ArmorDetector();
@@ -42,12 +28,7 @@ public:
 
 private:
     bool enable_debug;
-    enum class State { SEARCHING_STATE,
-        TRACKING_STATE };
-    State state;
-
-    enum class EnemyColor { RED,
-        BLUE };
+    enum class EnemyColor { RED, BLUE };
     EnemyColor enemy_color;
 
     cv::Mat show_lights;
@@ -58,10 +39,8 @@ private:
     cv::Mat DistillationColor(const cv::Mat& src);
     void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
 
-    void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<ArmorInfo>& armors);
-    void FilterArmors(std::vector<ArmorInfo>& armors);
-    ArmorInfo& SelectFinalArmor(std::vector<ArmorInfo>& armors);
-    
-    std::vector<cv::Point3f> small_armor_points, big_armor_points;
-    void CalcControlInfo(const ArmorInfo& armor, cv::Point3f& target);
+    void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<cv::RotatedRect>& armors);
+    cv::RotatedRect& SelectFinalArmor(std::vector<cv::RotatedRect>& armors);
+
+    void CalcControlInfo(const cv::RotatedRect& armor, cv::Point3f& target);
 };

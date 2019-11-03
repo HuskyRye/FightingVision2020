@@ -29,7 +29,6 @@ void ArmorParam::LoadParam()
     fs["armor_max_angle_diff"] >> armorParam.armor_max_angle_diff;
     fs["armor_max_aspect_ratio"] >> armorParam.armor_max_aspect_ratio;
     fs["armor_max_height_ratio"] >> armorParam.armor_max_height_ratio;
-    fs["armor_min_area"] >> armorParam.armor_min_area;
     fs["small_armor_width"] >> armorParam.small_armor_width;
     fs["big_armor_width"] >> armorParam.big_armor_width;
     fs["armor_height"] >> armorParam.armor_height;
