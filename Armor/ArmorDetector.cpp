@@ -41,12 +41,12 @@ bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target)
     std::vector<cv::RotatedRect> lights;
     DetectLights(src, lights);
 
-    std::vector<cv::RotatedRect> armors;
-    PossibleArmors(lights, armors);
+    std::vector<std::vector<cv::Point2f>> armors;
+    DetectArmors(lights, armors);
 
     if (armors.empty())
         return false;
-    cv::RotatedRect& final_armor = SelectFinalArmor(armors);
+    std::vector<cv::Point2f>& final_armor = SelectFinalArmor(armors);
     CalcControlInfo(final_armor, target);
 
     return true;
@@ -56,7 +56,6 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
 {
     cv::Mat gray_image;
     cv::cvtColor(src, gray_image, cv::COLOR_BGR2GRAY);
-
     cv::Mat binary_brightness_image;
     cv::threshold(gray_image, binary_brightness_image, armorParam.brightness_thresh, 255, cv::THRESH_BINARY);
 
@@ -114,7 +113,7 @@ void ArmorDetector::DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect&
         cv::line(image, vertices[i], vertices[(i + 1) % 4], color, thickness, cv::LINE_AA);
 }
 
-void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<cv::RotatedRect>& armors)
+void ArmorDetector::DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors)
 {
     for (unsigned int i = 0; i < lights.size(); ++i) {
         for (unsigned int j = i + 1; j < lights.size(); ++j) {
@@ -124,8 +123,8 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
             if (angle_diff > armorParam.armor_max_angle_diff)
                 continue;
 
-            double center_angle = (double)std::atan((lights[i].center.y - lights[j].center.y) / (lights[i].center.x - lights[j].center.x)) * 180 / CV_PI;
-            if (std::max(abs(center_angle - angle_i), abs(center_angle - angle_j)) > armorParam.armor_max_angle_diff)
+            double armor_angle = (double)std::atan((lights[i].center.y - lights[j].center.y) / (lights[i].center.x - lights[j].center.x)) * 180 / CV_PI;
+            if (std::max(abs(armor_angle - angle_i), abs(armor_angle - angle_j)) > armorParam.armor_max_angle_diff)
                 continue;
 
             float height_i = std::max(lights[i].size.width, lights[i].size.height);
@@ -134,63 +133,92 @@ void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, s
             if ((height.second / height.first) > armorParam.armor_max_height_ratio)
                 continue;
 
-            cv::RotatedRect rect;
-            rect.center = (lights[i].center + lights[j].center) / 2;
-            rect.angle = static_cast<float>(center_angle);
-            rect.size.width = std::sqrt((lights[i].center.x - lights[j].center.x) * (lights[i].center.x - lights[j].center.x) + (lights[i].center.y - lights[j].center.y) * (lights[i].center.y - lights[j].center.y));
-            rect.size.height = std::max<float>(height_i, height_j);
-            if ((rect.size.width / rect.size.height) > armorParam.armor_max_aspect_ratio)
+            float armor_width = std::sqrt((lights[i].center.x - lights[j].center.x) * (lights[i].center.x - lights[j].center.x) + (lights[i].center.y - lights[j].center.y) * (lights[i].center.y - lights[j].center.y));
+            float armor_height = (height_i + height_j) / 2;
+            if ((armor_width / armor_height) > armorParam.armor_max_aspect_ratio)
                 continue;
+
+            std::vector<cv::Point2f> armor;
+            if (lights[i].center.x < lights[j].center.x)
+                CalcArmorInfo(armor, lights[i], lights[j]);
+            else
+                CalcArmorInfo(armor, lights[j], lights[i]);
 
             /*
             if (enable_debug) {
-                std::cout << "\ncenter_angle = " << center_angle;
-                std::cout << "\nlights1_angle = " << lights1_angle;
-                std::cout << "\nlights2_angle = " << lights2_angle;
+                std::cout << "\nangle_i = " << angle_i;
+                std::cout << "\nangle_j = " << angle_j;
                 std::cout << "\nangle_diff = " << angle_diff;
-                std::cout << "\nrect_angle = " << rect.angle;
-                std::cout << "\nrect_width = " << rect.size.width;
-                std::cout << "\nrect_height = " << rect.size.height;
-                std::cout << "\nwidth/height = " << rect.size.width / rect.size.height;
-                std::cout << "\nedge1.first = " << edge1.first;
-                std::cout << "\nedge2.first = " << edge2.first;
-                std::cout << "\nedge1.second = " << edge1.second;
-                std::cout << "\nedge2.second = " << edge2.second;
+                std::cout << "\narmor_angle = " << armor_angle;
+
                 std::cout << "\nheight_i/height_j = " << height.second / height.first << '\n';
-                std::cout << "\nrect.area = " << rect.size.area();
+                std::cout << "\narmor_width = " << narmor_width;
+                std::cout << "\narmor_height = " << armor_height;
+                std::cout << "\nwidth/height = " << armor_width / armor_height;
             }
             */
 
-            armors.emplace_back(rect);
-            if (enable_debug)
-                DrawRotatedRect(show_possible_armors, rect, cv::Scalar(0, 255, 0), 2);
+            armors.emplace_back(armor);
+            if (enable_debug) {
+            }
         }
     }
-    if (enable_debug)
+    if (enable_debug) {
+        cv::drawContours(show_possible_armors, armors, -1, cv::Scalar(0, 255, 0), 2);
         cv::imshow("show_possible_armors", show_possible_armors);
+    }
 }
 
-cv::RotatedRect& ArmorDetector::SelectFinalArmor(std::vector<cv::RotatedRect>& armors)
+void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor, cv::RotatedRect left_light, cv::RotatedRect right_light)
 {
-    cv::RotatedRect max = *std::max_element(armors.begin(), armors.end(),
-        [](const cv::RotatedRect& r1, const cv::RotatedRect& r2) { return r1.size.area() > r2.size.area(); });
+    cv::Point2f left_points[4], right_points[4];
+    left_light.points(left_points);
+    right_light.points(right_points);
+
+    std::sort(left_points, left_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
+    cv::Point2f left_up = (left_points[0] + left_points[1]) / 2;
+    cv::Point2f left_down = (left_points[2] + left_points[3]) / 2;
+    cv::Point2f left_half_light = (left_down - left_up) / 2;
+
+    std::sort(right_points, right_points + 4, [](const cv::Point2f& p1, const cv::Point2f& p2) { return p1.y < p2.y; });
+    cv::Point2f right_up = (right_points[0] + right_points[1]) / 2;
+    cv::Point2f right_down = (right_points[2] + right_points[3]) / 2;
+    cv::Point2f right_half_light = (right_down - right_up) / 2;
+
+    armor.emplace_back(left_up - left_half_light);
+    armor.emplace_back(left_down + left_half_light);
+    armor.emplace_back(right_up - right_half_light);
+    armor.emplace_back(right_down + right_half_light);
+}
+
+std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(std::vector<std::vector<cv::Point2f>>& armors)
+{
+    std::vector<cv::Point2f>& max = *std::max_element(armors.begin(), armors.end(),
+        [](const std::vector<cv::Point2f>& armor1, const std::vector<cv::Point2f>& armor2) { return cv::contourArea(armor1) > cv::contourArea(armor2); });
     if (enable_debug) {
-        DrawRotatedRect(show_armors_after_filter, max, cv::Scalar(0, 255, 0), 2);
+        // DrawRotatedRect(show_armors_after_filter, max, cv::Scalar(0, 255, 0), 2);
+        // TODO: DrawArmor
         cv::imshow("show_armors_after_filter", show_armors_after_filter);
     }
     return max;
     // TODO: 根据 classifier 的值进行选择
 }
 
-void ArmorDetector::CalcControlInfo(const cv::RotatedRect& armor, cv::Point3f& target)
+void ArmorDetector::CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target)
 {
     static float half_camera_width = cameraParam.resolution_width / 2;
     static float half_camera_height = cameraParam.resolution_height / 2;
     static float camera_fx = cameraParam.camera_matrix.at<double>(0, 0);
     static float camera_fy = cameraParam.camera_matrix.at<double>(1, 1);
     constexpr double rad = 57.295779513082320876798154814105;
-    float yaw_offset = atan2(half_camera_width - armor.center.x, camera_fx) * rad;
-    float pitch_offset = atan2(half_camera_height - armor.center.y, camera_fy) * rad;
-    float distance = camera_fx * armorParam.armor_height / armor.size.height;
+
+    cv::Point2f armor_center = (armor[0] + armor[1] + armor[2] + armor[3]) / 4;
+    float armor_left_height = sqrt(powf(armor[0].x - armor[3].x, 2) + powf(armor[0].y - armor[3].y, 2));
+    float armor_right_height = sqrt(powf(armor[1].x - armor[2].x, 2) + powf(armor[1].y - armor[2].y, 2));
+    float armor_height = (armor_left_height + armor_right_height) / 4; // TODO: armorParam中的armor_height 需要修改，这里改为/2
+
+    float yaw_offset = atan2(half_camera_width - armor_center.x, camera_fx) * rad;
+    float pitch_offset = atan2(half_camera_height - armor_center.y, camera_fy) * rad;
+    float distance = camera_fx * armorParam.armor_height / armor_height;
     target = cv::Point3f(yaw_offset, pitch_offset, distance);
 }

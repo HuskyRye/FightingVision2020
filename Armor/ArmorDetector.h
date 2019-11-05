@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "opencv2/opencv.hpp"
 #include "../Config/FightingParam.h"
+#include "opencv2/opencv.hpp"
 
 class ArmorDetector {
 public:
@@ -28,7 +28,8 @@ public:
 
 private:
     bool enable_debug;
-    enum class EnemyColor { RED, BLUE };
+    enum class EnemyColor { RED,
+        BLUE };
     EnemyColor enemy_color;
 
     cv::Mat show_lights;
@@ -39,8 +40,9 @@ private:
     cv::Mat DistillationColor(const cv::Mat& src);
     void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
 
-    void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<cv::RotatedRect>& armors);
-    cv::RotatedRect& SelectFinalArmor(std::vector<cv::RotatedRect>& armors);
+    void DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors);
+    void CalcArmorInfo(std::vector<cv::Point2f>& armor, cv::RotatedRect left_light, cv::RotatedRect right_light);
+    std::vector<cv::Point2f>& SelectFinalArmor(std::vector<std::vector<cv::Point2f>>& armors);
 
-    void CalcControlInfo(const cv::RotatedRect& armor, cv::Point3f& target);
+    void CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target);
 };
