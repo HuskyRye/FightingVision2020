@@ -36,13 +36,15 @@ private:
     cv::Mat show_armors;
     cv::Mat show_final_armor;
 
-    void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
     cv::Mat DistillationColor(const cv::Mat& src);
-    void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
+    inline void DrawRotatedRect(const cv::Mat& image, const cv::RotatedRect& rect, const cv::Scalar& color, int thickness);
+    void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
 
+    inline void DrawArmor(const cv::Mat& image, const std::vector<cv::Point2f>& armor, const cv::Scalar& color, int thickness);
     void DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors);
-    void CalcArmorInfo(std::vector<cv::Point2f>& armor, cv::RotatedRect left_light, cv::RotatedRect right_light);
+    void CalcArmorInfo(std::vector<cv::Point2f>& armor, const cv::RotatedRect& left_light, const cv::RotatedRect& right_light);
 
+    const std::vector<cv::Point2f> armor_points { cv::Point2f(0, 0), cv::Point2f(135, 0), cv::Point2f(135, 125), cv::Point2f(0, 125) };
     std::vector<cv::Point2f>& SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target);
 };

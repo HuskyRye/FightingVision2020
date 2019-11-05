@@ -35,6 +35,7 @@ struct ArmorParam : FightingParam{
     float small_armor_width;
     float big_armor_width;
     float armor_height;
+    float shift_scale;
 
     void LoadParam() final;
 };

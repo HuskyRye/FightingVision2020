@@ -32,5 +32,6 @@ void ArmorParam::LoadParam()
     fs["small_armor_width"] >> armorParam.small_armor_width;
     fs["big_armor_width"] >> armorParam.big_armor_width;
     fs["armor_height"] >> armorParam.armor_height;
+    fs["shift_scale"] >> armorParam.shift_scale;
     fs.release();
 }
