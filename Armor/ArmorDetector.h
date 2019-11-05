@@ -33,8 +33,8 @@ private:
     EnemyColor enemy_color;
 
     cv::Mat show_lights;
-    cv::Mat show_possible_armors;
-    cv::Mat show_armors_after_filter;
+    cv::Mat show_armors;
+    cv::Mat show_final_armor;
 
     void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
     cv::Mat DistillationColor(const cv::Mat& src);
@@ -42,7 +42,7 @@ private:
 
     void DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcArmorInfo(std::vector<cv::Point2f>& armor, cv::RotatedRect left_light, cv::RotatedRect right_light);
-    std::vector<cv::Point2f>& SelectFinalArmor(std::vector<std::vector<cv::Point2f>>& armors);
 
+    std::vector<cv::Point2f>& SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target);
 };
