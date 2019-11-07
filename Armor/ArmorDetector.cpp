@@ -193,12 +193,14 @@ std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, st
     std::vector<int> armors_level(armors.size());
     for (auto armor : armors) {
         cv::Mat homography = cv::findHomography(armor, armor_points, cv::RANSAC);
-        cv::warpPerspective(src, perspective, homography, cv::Size(135, 125));
+        cv::warpPerspective(src, perspective, homography, cv::Size(armorParam.small_armor_width, armorParam.armor_height));
+
         /* 数字识别：基地8(level_5) > 哨兵7(level_4) > 英雄1(level_3) > 步兵345(level_2) > 工程2(level_1) > 无0(level_0)) */
         armors_level.emplace_back(0 /* level of armor */);
     }
     int max_index = std::distance(armors_level.begin(), std::max_element(armors_level.begin(), armors_level.end(),
-                                  [](const int& a1, const int& a2) { return (a1 != a2) ? a1 > a2 : cv::contourArea(a1) > cv::contourArea(a2); }));
+                                                                         [&armors](const int& a1, const int& a2) 
+                                                                         { return (a1 != a2) ? a1 > a2 : cv::contourArea(armors[a1]) > cv::contourArea(armors[a2]); }));
     if (enable_debug) {
         DrawArmor(show_final_armor, armors[max_index], cv::Scalar(0, 255, 0), 2);
         cv::imshow("show_final_armor", show_final_armor);
@@ -222,6 +224,6 @@ void ArmorDetector::CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::P
 
     float yaw_offset = atan2(half_camera_width - armor_center.x, camera_fx) * rad;
     float pitch_offset = atan2(half_camera_height - armor_center.y, camera_fy) * rad;
-    float distance = camera_fx * armorParam.armor_height / armor_height;
+    float distance = camera_fx * armorParam.armor_height / armor_height /1000;
     target = cv::Point3f(yaw_offset, pitch_offset, distance);
 }

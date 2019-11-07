@@ -44,7 +44,8 @@ private:
     void DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcArmorInfo(std::vector<cv::Point2f>& armor, const cv::RotatedRect& left_light, const cv::RotatedRect& right_light);
 
-    const std::vector<cv::Point2f> armor_points { cv::Point2f(0, 0), cv::Point2f(135, 0), cv::Point2f(135, 125), cv::Point2f(0, 125) };
+    const std::vector<cv::Point2f> armor_points { cv::Point2f(0, 0), cv::Point2f(armorParam.small_armor_width, 0),
+        cv::Point2f(armorParam.small_armor_width, armorParam.armor_height), cv::Point2f(0, armorParam.armor_height) };
     std::vector<cv::Point2f>& SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target);
 };
