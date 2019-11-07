@@ -46,6 +46,7 @@ private:
 
     const std::vector<cv::Point2f> armor_points { cv::Point2f(0, 0), cv::Point2f(armorParam.small_armor_width, 0),
         cv::Point2f(armorParam.small_armor_width, armorParam.armor_height), cv::Point2f(0, armorParam.armor_height) };
+    std::vector<cv::Mat> number_template;
     std::vector<cv::Point2f>& SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target);
 };
