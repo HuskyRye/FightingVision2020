@@ -25,7 +25,6 @@ ArmorDetector::ArmorDetector()
     number_template.emplace_back(cv::Mat());
     for (int i = 1; i <= 8; ++i)
         number_template.emplace_back(cv::imread(std::to_string(i) + ".png", cv::IMREAD_GRAYSCALE));
-
 }
 
 ArmorDetector::~ArmorDetector()
@@ -193,31 +192,30 @@ void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor, const cv::Rot
 
 int ArmorDetector::DetectNumber(const cv::Mat& perspective)
 {
-    int result[9] = { INT_MAX };
+    int result[9];
     for (int i = 1; i <= 8; ++i) {
         cv::Mat dst;
         cv::absdiff(perspective, number_template[i], dst);
         result[i] = cv::countNonZero(dst);
         // cv::imshow("abs_diff" + std::to_string(i), dst);
     }
-    return std::distance(result, std::min_element(result, result + 8));
+    return std::distance(result, std::min_element(result + 1, result + 8));
 }
 
 std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors)
 {
     std::vector<int> armors_level(armors.size());
     for (int i = 0; i < armors.size(); ++i) {
-        cv::Mat homography = cv::findHomography(armors[i], armor_points, cv::RANSAC);
         cv::Mat perspective;
+        cv::Mat homography = cv::findHomography(armors[i], armor_points, cv::RANSAC);
         cv::warpPerspective(src, perspective, homography, cv::Size(armorParam.small_armor_width, armorParam.armor_height));
         cv::cvtColor(perspective, perspective, cv::COLOR_BGR2GRAY);
-        cv::threshold(perspective, perspective, 100, 255, cv::THRESH_BINARY);
+        cv::threshold(perspective, perspective, armorParam.number_thresh, 255, cv::THRESH_BINARY);
         armors_level[i] = number_level[DetectNumber(perspective)];
-        if (enable_debug) {
-            // std::cout << "\nnumber = " << min_result_index + 1;
-            // std::cout << ", level = " << armors_level[i];
+        // std::cout << "\nnumber = " << min_result_index + 1;
+        // std::cout << ", level = " << armors_level[i];
+        if (enable_debug)
             cv::imshow("perspective", perspective);
-        }
     }
     int max_level_index = std::distance(armors_level.begin(), std::max_element(armors_level.begin(), armors_level.end()));
     if (enable_debug) {

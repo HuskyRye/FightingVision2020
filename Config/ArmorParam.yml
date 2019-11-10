@@ -11,3 +11,4 @@ small_armor_width: 125
 big_armor_width: 217
 armor_height: 125
 shift_scale: 7.5000000000000000e-01
+number_thresh: 100

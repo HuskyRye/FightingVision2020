@@ -37,6 +37,9 @@ struct ArmorParam : FightingParam{
     float armor_height;
     float shift_scale;
 
+    // DetectNumber
+    float number_thresh;
+
     void LoadParam() final;
 };
 

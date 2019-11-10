@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     }
     Protocol protocol(serial_port);
 
-    /* Armor and Rune */
+    /* ArmorDetector and RuneDetector */
     armorParam.LoadParam();
     runeParam.LoadParam();
     State current_state = State::ARMOR_STATE;
