@@ -22,8 +22,10 @@ ArmorDetector::ArmorDetector()
     // TODO: 从串口读取数据
     enemy_color = EnemyColor::BLUE;
     enable_debug = true;
+    number_template.emplace_back(cv::Mat());
     for (int i = 1; i <= 8; ++i)
-        number_template.emplace_back(cv::imread(std::to_string(i) + ".png"));
+        number_template.emplace_back(cv::imread(std::to_string(i) + ".png", cv::IMREAD_GRAYSCALE));
+
 }
 
 ArmorDetector::~ArmorDetector()
@@ -189,49 +191,38 @@ void ArmorDetector::CalcArmorInfo(std::vector<cv::Point2f>& armor, const cv::Rot
     armor.emplace_back(left_down + left_shift);
 }
 
+int ArmorDetector::DetectNumber(const cv::Mat& perspective)
+{
+    int result[9] = { INT_MAX };
+    for (int i = 1; i <= 8; ++i) {
+        cv::Mat dst;
+        cv::absdiff(perspective, number_template[i], dst);
+        result[i] = cv::countNonZero(dst);
+        // cv::imshow("abs_diff" + std::to_string(i), dst);
+    }
+    return std::distance(result, std::min_element(result, result + 8));
+}
+
 std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors)
 {
-    cv::Mat perspective;
     std::vector<int> armors_level(armors.size());
-    for (auto armor : armors) {
-        cv::Mat homography = cv::findHomography(armor, armor_points, cv::RANSAC);
+    for (int i = 0; i < armors.size(); ++i) {
+        cv::Mat homography = cv::findHomography(armors[i], armor_points, cv::RANSAC);
+        cv::Mat perspective;
         cv::warpPerspective(src, perspective, homography, cv::Size(armorParam.small_armor_width, armorParam.armor_height));
         cv::cvtColor(perspective, perspective, cv::COLOR_BGR2GRAY);
-        cv::threshold(perspective, perspective, 50, 255, cv::THRESH_BINARY);
-        int result[8];
-        for (int i = 1; i <= 8; ++i) {
-            // 相似值放入result
-        }
-        int max_result_index = std::distance(result, std::max_element(result, result + 8));
-        /* 基地8(level_5) > 哨兵7(level_4) > 英雄1(level_3) > 步兵345(level_2) > 工程2(level_1) > 无0(level_0)) > 6(error) */
-        switch (max_result_index + 1) {
-        case 1:
-            armors_level.emplace_back(3);
-            break;
-        case 2:
-            armors_level.emplace_back(1);
-            break;
-        case 3:
-        case 4:
-        case 5:
-            armors_level.emplace_back(2);
-            break;
-        case 6:
-            armors_level.emplace_back(0);
-            break;
-        case 7:
-            armors_level.emplace_back(4);
-            break;
-        case 8:
-            armors_level.emplace_back(5);
-            break;
+        cv::threshold(perspective, perspective, 100, 255, cv::THRESH_BINARY);
+        armors_level[i] = number_level[DetectNumber(perspective)];
+        if (enable_debug) {
+            // std::cout << "\nnumber = " << min_result_index + 1;
+            // std::cout << ", level = " << armors_level[i];
+            cv::imshow("perspective", perspective);
         }
     }
-    int max_level_index = std::distance(armors_level.begin(), std::max_element(armors_level.begin(), armors_level.end(), [&armors](const int& a1, const int& a2) { return (a1 != a2) ? a1 > a2 : cv::contourArea(armors[a1]) > cv::contourArea(armors[a2]); }));
+    int max_level_index = std::distance(armors_level.begin(), std::max_element(armors_level.begin(), armors_level.end()));
     if (enable_debug) {
         DrawArmor(show_final_armor, armors[max_level_index], cv::Scalar(0, 255, 0), 2);
         cv::imshow("show_final_armor", show_final_armor);
-        cv::imshow("perspective", perspective);
     }
     return armors[max_level_index];
 }
