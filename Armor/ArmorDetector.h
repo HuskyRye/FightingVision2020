@@ -41,7 +41,7 @@ private:
     void DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect>& lights);
 
     inline void DrawArmor(const cv::Mat& image, const std::vector<cv::Point2f>& armor, const cv::Scalar& color, int thickness);
-    void DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors);
+    void PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors);
     void CalcArmorInfo(std::vector<cv::Point2f>& armor, const cv::RotatedRect& left_light, const cv::RotatedRect& right_light);
 
     const std::vector<cv::Point2f> armor_points { cv::Point2f(0, 0), cv::Point2f(armorParam.small_armor_width, 0),

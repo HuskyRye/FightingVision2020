@@ -46,7 +46,7 @@ bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target)
     DetectLights(src, lights);
 
     std::vector<std::vector<cv::Point2f>> armors;
-    DetectArmors(lights, armors);
+    PossibleArmors(lights, armors);
     if (armors.empty())
         return false;
 
@@ -121,7 +121,7 @@ inline void ArmorDetector::DrawArmor(const cv::Mat& image, const std::vector<cv:
         cv::line(image, armor[i], armor[(i + 1) % 4], color, thickness, cv::LINE_AA);
 }
 
-void ArmorDetector::DetectArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors)
+void ArmorDetector::PossibleArmors(const std::vector<cv::RotatedRect>& lights, std::vector<std::vector<cv::Point2f>>& armors)
 {
     for (unsigned int i = 0; i < lights.size(); ++i) {
         for (unsigned int j = i + 1; j < lights.size(); ++j) {
