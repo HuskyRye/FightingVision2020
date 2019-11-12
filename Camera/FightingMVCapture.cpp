@@ -20,6 +20,7 @@
 
 FightingMVCapture::FightingMVCapture()
 {
+    CameraSdkInit();
 }
 
 FightingMVCapture::~FightingMVCapture()

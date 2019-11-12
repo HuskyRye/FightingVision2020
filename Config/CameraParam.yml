@@ -1,4 +1,25 @@
 %YAML:1.0
 ---
-camera_type: MindVision
-camera_name: '049090910019'
+camera_type: Dahua
+camera_name: dahua
+camera_matrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 1.6977000000000000e+03, 0., 643., 0., 1.7043000000000000e+03,
+       4.8189999999999998e+02, 0., 0., 1. ]
+camera_distortion: !!opencv-matrix
+   rows: 4
+   cols: 1
+   dt: d
+   data: [ -8.3799999999999999e-02, 3.1750000000000000e-01, 0., 0. ]
+resolution_width: 1280
+resolution_height: 1024
+auto_exposure: 0
+exposure_time: 10000
+frame_rate: 210
+brightness: 50
+auto_white_balance: 0
+balance_ratio_red: 1.5000000000000000e+00
+balance_ratio_green: 1.
+balance_ratio_blue: 1.5000000000000000e+00

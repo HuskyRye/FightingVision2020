@@ -24,6 +24,22 @@ struct CameraParam : FightingParam{
     std::string camera_type;
     std::string camera_name;
 
+    cv::Mat camera_matrix;
+    cv::Mat camera_distortion;
+
+    int resolution_width;
+    int resolution_height;
+
+    bool auto_exposure;
+    double exposure_time;
+    double frame_rate;
+    int brightness;
+
+    bool auto_white_balance;
+    double balance_ratio_red;
+    double balance_ratio_green;
+    double balance_ratio_blue;
+
     void LoadParam() final;
 };
 
