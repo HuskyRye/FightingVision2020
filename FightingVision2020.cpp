@@ -25,8 +25,8 @@ int main(int argc, char* argv[])
     /* Video source */
     cameraParam.LoadParam();
     FightingCapture* capture;
-    if (cameraParam.camera_type == "Dahua")
-        capture = new FightingDahuaCapture();
+    if (cameraParam.camera_type == "MindVision")
+        capture = new FightingMVCapture();
     else if (cameraParam.camera_type == "USB")
         capture = new FightingUSBCapture(stoi(cameraParam.camera_name));
     else if (cameraParam.camera_type == "Video")
@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
         printf("Invalid Camera Type: %s.\n", cameraParam.camera_type.c_str());
         return 1;
     }
+    printf("Camera name: %s\n", cameraParam.camera_name.c_str());
     if (capture && !capture->init()) {
         printf("Video source initialization failed.\n");
         return 1;

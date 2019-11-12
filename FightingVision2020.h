@@ -22,9 +22,9 @@
 #include <opencv2/opencv.hpp>
 
 #include "Camera/FightingCapture.h"
-#include "Camera/FightingVideoCapture.h"
-#include "Camera/FightingDahuaCapture.h"
+#include "Camera/FightingMVCapture.h"
 #include "Camera/FightingUSBCapture.h"
+#include "Camera/FightingVideoCapture.h"
 
 #include "SerialPort/SerialPort.h"
 #include "SerialPort/Protocol.h"

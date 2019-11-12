@@ -21,7 +21,6 @@ set(SRC
     "SerialPort/SerialPort.cpp"
     "SerialPort/Protocol.cpp"
     "Camera/FightingVideoCapture.cpp"
-    "Camera/FightingDahuaCapture.cpp"
     "Camera/FightingUSBCapture.cpp"
     "Armor/ArmorDetector.cpp"
     "Rune/RuneDetector.cpp"
@@ -35,12 +34,10 @@ add_executable (FightingVision2020 ${SRC})
 target_link_libraries( FightingVision2020 ${OpenCV_LIBS} )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/MVSDKmd.lib" )
-    target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/ImageConvert.lib" )
-    file(COPY "${PROJECT_SOURCE_DIR}/Camera/ImageConvert.dll" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+    target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/MVCAMSDK_X64.lib" )
+    file(COPY "${PROJECT_SOURCE_DIR}/Camera/MVCAMSDK_X64.dll" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libMVSDK.so" )
-    target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libImageConvert.so" )
 endif()
 
 file(COPY "${PROJECT_SOURCE_DIR}/Config/CameraParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
