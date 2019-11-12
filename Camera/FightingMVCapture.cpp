@@ -20,7 +20,6 @@
 
 FightingMVCapture::FightingMVCapture()
 {
-    CameraSdkInit();
 }
 
 FightingMVCapture::~FightingMVCapture()
@@ -29,6 +28,13 @@ FightingMVCapture::~FightingMVCapture()
 
 bool FightingMVCapture::init()
 {
+    CameraSdkInit(1);
+    tSdkCameraDevInfo sCameraList[2];
+    int iCameraNums;
+    if (CameraEnumerateDevice(sCameraList, &iCameraNums) != CAMERA_STATUS_SUCCESS || iCameraNums == 0) {
+        printf("No camera was found!");
+        return false;
+    }
     return false;
 }
 

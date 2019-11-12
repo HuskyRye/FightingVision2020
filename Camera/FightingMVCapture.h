@@ -20,6 +20,7 @@
 #include "FightingCapture.h"
 
 #ifdef Windows
+    #include <Windows.h>
     #include "Include/CameraApi.h"
 #elif defined Linux
     #include "Include/camera_api.h"

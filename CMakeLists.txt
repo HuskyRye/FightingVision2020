@@ -20,6 +20,7 @@ set(SRC
     "FightingVision2020.cpp"
     "SerialPort/SerialPort.cpp"
     "SerialPort/Protocol.cpp"
+	"Camera/FightingMVCapture.cpp"
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingUSBCapture.cpp"
     "Armor/ArmorDetector.cpp"
