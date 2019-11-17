@@ -24,21 +24,54 @@ FightingMVCapture::FightingMVCapture()
 
 FightingMVCapture::~FightingMVCapture()
 {
+    CameraUnInit(m_hCamera);
 }
 
 bool FightingMVCapture::init()
 {
+    // 初始化SDK
     CameraSdkInit(1);
-    tSdkCameraDevInfo sCameraList[2];
-    int iCameraNums;
+
+    // 枚举设备
+    tSdkCameraDevInfo sCameraList[1];
+    int iCameraNums = 1;
     if (CameraEnumerateDevice(sCameraList, &iCameraNums) != CAMERA_STATUS_SUCCESS || iCameraNums == 0) {
         printf("No camera was found!");
         return false;
     }
-    return false;
+
+    // 初始化设备
+    if (CameraSdkStatus status = CameraInit(&sCameraList[0], -1, -1, &m_hCamera) != CAMERA_STATUS_SUCCESS) {
+        printf("Failed to init the camera! Error code is %d", status);
+        printf(CameraGetErrorString(status));
+        return false;
+    }
+
+    // 注册回调函数
+    CameraSetCallbackFunction(m_hCamera, grabbingCallback, this, nullptr);
+
+    // 开始采集图像
+    CameraPlay(m_hCamera);
+    return true;
 }
 
 bool FightingMVCapture::read(cv::Mat& image)
 {
-    return false;
+    double start = static_cast<double>(cv::getTickCount());
+    while (circular_queue.empty()) {
+        double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
+        if (time > 0.5)
+            return false;
+    }
+    return circular_queue.pop(image);
+}
+
+void grabbingCallback(CameraHandle hCamera, BYTE* pFrameBuffer, tSdkFrameHead* pFrameHead, PVOID pContext)
+{
+    FightingMVCapture* capture = (FightingMVCapture*)pContext;
+    CameraImageProcess(hCamera, pFrameBuffer, capture->m_pFrameBuffer, pFrameHead);
+    auto iplImage = cv::createImageHeader(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight), IPL_DEPTH_8U, 3);
+    cv::setData(iplImage, capture->m_pFrameBuffer, pFrameHead->iWidth * c->channel); //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
+    capture->circular_queue.push(cv::cvarrToMat(iplImage).clone());
+
 }

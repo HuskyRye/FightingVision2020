@@ -18,6 +18,8 @@
 #pragma once
 
 #include "FightingCapture.h"
+#include <opencv2/opencv.hpp>
+#include "CircularQueue.h"
 
 #ifdef Windows
     #include <Windows.h>
@@ -35,4 +37,11 @@ public:
     bool init() final;
     bool read(cv::Mat& image) final;
 
+    friend void grabbingCallback(CameraHandle hCamera, BYTE* pFrameBuffer, tSdkFrameHead* pFrameHead, PVOID pContext);
+
+private:
+    CameraHandle m_hCamera;
+    BYTE* m_pFrameBuffer;
+
+   CircularQueue<cv::Mat, 4> circular_queue;
 };
