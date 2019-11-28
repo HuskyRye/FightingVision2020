@@ -1,7 +1,7 @@
 %YAML:1.0
 ---
-camera_type: Dahua
-camera_name: dahua
+camera_type: MindVision
+camera_name: mindvision
 camera_matrix: !!opencv-matrix
    rows: 3
    cols: 3

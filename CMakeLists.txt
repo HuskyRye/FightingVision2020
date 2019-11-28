@@ -36,7 +36,6 @@ target_link_libraries( FightingVision2020 ${OpenCV_LIBS} )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/MVCAMSDK_X64.lib" )
-    file(COPY "${PROJECT_SOURCE_DIR}/Camera/MVCAMSDK_X64.dll" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_link_libraries( FightingVision2020 "${PROJECT_SOURCE_DIR}/Camera/libMVSDK.so" )
 endif()

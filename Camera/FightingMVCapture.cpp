@@ -70,8 +70,8 @@ void grabbingCallback(CameraHandle hCamera, BYTE* pFrameBuffer, tSdkFrameHead* p
 {
     FightingMVCapture* capture = (FightingMVCapture*)pContext;
     CameraImageProcess(hCamera, pFrameBuffer, capture->m_pFrameBuffer, pFrameHead);
-    auto iplImage = cv::createImageHeader(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight), IPL_DEPTH_8U, 3);
-    cv::setData(iplImage, capture->m_pFrameBuffer, pFrameHead->iWidth * c->channel); //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
-    capture->circular_queue.push(cv::cvarrToMat(iplImage).clone());
-
+    cv::Mat matImage(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight),
+        pFrameHead->uiMediaType == CAMERA_MEDIA_TYPE_MONO8 ? CV_8UC1 : CV_8UC3,
+        capture->m_pFrameBuffer);
+    capture->circular_queue.push(matImage.clone());
 }
