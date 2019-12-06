@@ -70,8 +70,6 @@ void grabbingCallback(CameraHandle hCamera, BYTE* pFrameBuffer, tSdkFrameHead* p
 {
     FightingMVCapture* capture = (FightingMVCapture*)pContext;
     CameraImageProcess(hCamera, pFrameBuffer, capture->m_pFrameBuffer, pFrameHead);
-    cv::Mat matImage(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight),
-        pFrameHead->uiMediaType == CAMERA_MEDIA_TYPE_MONO8 ? CV_8UC1 : CV_8UC3,
-        capture->m_pFrameBuffer);
+    cv::Mat matImage(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight), CV_8UC3, capture->m_pFrameBuffer);
     capture->circular_queue.push(matImage.clone());
 }
