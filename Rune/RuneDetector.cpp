@@ -95,8 +95,8 @@ void RuneDetector::CalcControlInfo(const cv::RotatedRect& armor, cv::Point3f& ta
 {
     static float half_camera_width = cameraParam.resolution_width / 2;
     static float half_camera_height = cameraParam.resolution_height / 2;
-    static float camera_fx = cameraParam.camera_matrix.at<double>(0, 0);
-    static float camera_fy = cameraParam.camera_matrix.at<double>(1, 1);
+    static float camera_fx = cameraParam.fx;
+    static float camera_fy = cameraParam.fy;
     constexpr double rad = 57.295779513082320876798154814105;
     float yaw_offset = atan2(half_camera_width - armor.center.x, camera_fx) * rad;
     float pitch_offset = atan2(half_camera_height - armor.center.y, camera_fy) * rad;

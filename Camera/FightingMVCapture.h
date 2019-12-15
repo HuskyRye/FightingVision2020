@@ -20,6 +20,7 @@
 #include "FightingCapture.h"
 #include <opencv2/opencv.hpp>
 #include "CircularQueue.h"
+#include "../Config/CameraParam.h"
 
 #ifdef Windows
     #include <Windows.h>

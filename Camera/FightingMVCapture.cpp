@@ -47,6 +47,20 @@ bool FightingMVCapture::init()
         return false;
     }
 
+    // 初始化缓存
+    tSdkCameraCapbility sCameraInfo;
+    CameraGetCapability(m_hCamera, &sCameraInfo);
+    m_pFrameBuffer = (BYTE*)CameraAlignMalloc(sCameraInfo.sResolutionRange.iWidthMax * sCameraInfo.sResolutionRange.iWidthMax * 3, 16);
+
+    // 初始化参数
+    cameraParam.resolution_height = sCameraInfo.sResolutionRange.iHeightMax;
+    cameraParam.resolution_width = sCameraInfo.sResolutionRange.iWidthMax;
+    char fx[25], fy[25];
+    CameraReadSN(m_hCamera, (BYTE*)&fx, 1);
+    CameraReadSN(m_hCamera, (BYTE*)&fy, 2);
+    cameraParam.fx = std::stod(fx);
+    cameraParam.fy = std::stod(fy);
+
     // 注册回调函数
     CameraSetCallbackFunction(m_hCamera, grabbingCallback, this, nullptr);
 
@@ -69,7 +83,11 @@ bool FightingMVCapture::read(cv::Mat& image)
 void grabbingCallback(CameraHandle hCamera, BYTE* pFrameBuffer, tSdkFrameHead* pFrameHead, PVOID pContext)
 {
     FightingMVCapture* capture = (FightingMVCapture*)pContext;
-    CameraImageProcess(hCamera, pFrameBuffer, capture->m_pFrameBuffer, pFrameHead);
-    cv::Mat matImage(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight), CV_8UC3, capture->m_pFrameBuffer);
-    capture->circular_queue.push(matImage.clone());
+    CameraSdkStatus status = CameraImageProcess(hCamera, pFrameBuffer, capture->m_pFrameBuffer, pFrameHead);
+    if (status == CAMERA_STATUS_SUCCESS) {
+        // 由于SDK输出的数据默认是从底到顶的，转换为Opencv图片需要做一下垂直镜像
+        CameraFlipFrameBuffer(capture->m_pFrameBuffer, pFrameHead, 1);
+        cv::Mat matImage(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight), CV_8UC3, capture->m_pFrameBuffer);
+        capture->circular_queue.push(matImage.clone());
+    }
 }

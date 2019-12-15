@@ -229,8 +229,8 @@ void ArmorDetector::CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::P
 {
     static float half_camera_width = cameraParam.resolution_width / 2;
     static float half_camera_height = cameraParam.resolution_height / 2;
-    static float camera_fx = cameraParam.camera_matrix.at<double>(0, 0);
-    static float camera_fy = cameraParam.camera_matrix.at<double>(1, 1);
+    static float camera_fx = cameraParam.fx;
+    static float camera_fy = cameraParam.fy;
     constexpr double rad = 57.295779513082320876798154814105;
 
     cv::Point2f armor_up = (armor[0] + armor[1]) / 2;
