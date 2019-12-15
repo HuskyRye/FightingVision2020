@@ -205,12 +205,13 @@ int ArmorDetector::DetectNumber(const cv::Mat& perspective)
 std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors)
 {
     std::vector<int> armors_level(armors.size());
+    cv::Mat gray;
+    cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, gray, armorParam.number_thresh, 255, cv::THRESH_BINARY);
     for (int i = 0; i < armors.size(); ++i) {
         cv::Mat perspective;
         cv::Mat homography = cv::findHomography(armors[i], armor_points, cv::RANSAC);
-        cv::warpPerspective(src, perspective, homography, cv::Size(armorParam.small_armor_width, armorParam.armor_height));
-        cv::cvtColor(perspective, perspective, cv::COLOR_BGR2GRAY);
-        cv::threshold(perspective, perspective, armorParam.number_thresh, 255, cv::THRESH_BINARY);
+        cv::warpPerspective(gray, perspective, homography, cv::Size(armorParam.small_armor_width, armorParam.armor_height));
         armors_level[i] = number_level[DetectNumber(perspective)];
         // std::cout << "\nnumber = " << min_result_index + 1;
         // std::cout << ", level = " << armors_level[i];
