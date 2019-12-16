@@ -25,6 +25,20 @@ public:
     explicit Protocol(SerialPort& serial_port);
     ~Protocol();
     void sendTarget(cv::Point3f& target);
+    void receiveData();
+
 private:
     SerialPort& serial_port_;
 };
+
+enum class EnemyColor : uchar { RED = 'a',
+    BLUE };
+enum class State : uchar { ARMOR_STATE = 'a',
+    RUNE_STATE };
+
+struct McuData {
+    EnemyColor enemy_color;
+    State state;
+};
+
+extern McuData mcu_data;

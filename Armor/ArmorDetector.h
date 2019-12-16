@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "../SerialPort/Protocol.h"
 #include "../Config/FightingParam.h"
 #include "opencv2/opencv.hpp"
 
@@ -28,9 +29,6 @@ public:
 
 private:
     bool enable_debug;
-    enum class EnemyColor { RED,
-        BLUE };
-    EnemyColor enemy_color;
 
     cv::Mat show_lights;
     cv::Mat show_armors;

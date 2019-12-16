@@ -17,9 +17,6 @@
 
 #include "FightingVision2020.h"
 
-enum class State { ARMOR_STATE,
-    RUNE_STATE };
-
 int main(int argc, char* argv[])
 {
     /* Video source */
@@ -52,19 +49,19 @@ int main(int argc, char* argv[])
         return 1;
     }
     Protocol protocol(serial_port);
+    std::thread receive(&Protocol::receiveData, protocol);
 
     /* ArmorDetector and RuneDetector */
     armorParam.LoadParam();
     runeParam.LoadParam();
-    State current_state = State::ARMOR_STATE;
     ArmorDetector armor_detector;
     RuneDetector rune_detector;
     cv::Mat src;
     cv::Point3f target;
     while (true) {
         if (capture->read(src)) {
-            if ((current_state == State::ARMOR_STATE && armor_detector.DetectArmor(src, target))
-                || (current_state == State::RUNE_STATE && rune_detector.DetectRune(src, target)))
+            if ((mcu_data.state == State::ARMOR_STATE && armor_detector.DetectArmor(src, target))
+                || (mcu_data.state == State::RUNE_STATE && rune_detector.DetectRune(src, target)))
                 protocol.sendTarget(target);
             // cv::imshow("src", src);
             // cv::waitKey(0);

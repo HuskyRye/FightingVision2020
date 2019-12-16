@@ -20,7 +20,6 @@
 Protocol::Protocol(SerialPort& serial_port)
     : serial_port_(serial_port)
 {
-
 }
 
 Protocol::~Protocol()
@@ -54,4 +53,22 @@ void Protocol::sendTarget(cv::Point3f& target)
     uart_data[14] = 0xFC;
     uart_data[15] = 0x03;
     serial_port_.Write(uart_data, 16);
+}
+
+McuData mcu_data = {
+    EnemyColor::BLUE, 
+    State::ARMOR_STATE
+};
+
+void Protocol::receiveData()
+{
+    uint8_t buffer[20];
+    while (true) {
+        memset(buffer, 0, sizeof(buffer));
+        serial_port_.Read(buffer, sizeof(buffer));
+        if (buffer[0] == '0x03' && buffer[1] == '0xFC'
+            && buffer[sizeof(mcu_data)] == '0x03'
+            && buffer[sizeof(mcu_data) - 1] == '0xFC')
+            memcpy(&mcu_data, buffer + 2, sizeof(mcu_data));
+    }
 }

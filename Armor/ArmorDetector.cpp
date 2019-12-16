@@ -19,8 +19,6 @@
 
 ArmorDetector::ArmorDetector()
 {
-    // TODO: 从串口读取数据
-    enemy_color = EnemyColor::BLUE;
     enable_debug = true;
     number_template.emplace_back(cv::Mat());
     for (int i = 1; i <= 8; ++i)
@@ -59,10 +57,10 @@ cv::Mat ArmorDetector::DistillationColor(const cv::Mat& src)
     std::vector<cv::Mat> bgr;
     cv::split(src, bgr);
     cv::Mat result;
-    if (EnemyColor::BLUE == enemy_color)
-        cv::subtract(bgr[0], bgr[2], result);
+    if (mcu_data.enemy_color == EnemyColor::BLUE)
+        cv::subtract(bgr[0], bgr[2]*0.75, result);
     else
-        cv::subtract(bgr[2], bgr[0], result);
+        cv::subtract(bgr[2], bgr[0]*0.75, result);
     return result;
 }
 
@@ -83,7 +81,7 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
 
     cv::Mat binary_color_image;
     cv::Mat distillation = DistillationColor(src);
-    float thresh = (enemy_color == EnemyColor::BLUE) ? armorParam.blue_thresh : armorParam.red_thresh;
+    float thresh = (mcu_data.enemy_color == EnemyColor::BLUE) ? armorParam.blue_thresh : armorParam.red_thresh;
     cv::threshold(distillation, binary_color_image, thresh, 255, cv::THRESH_BINARY);
     cv::morphologyEx(binary_color_image, binary_color_image, cv::MORPH_CLOSE, cv::Mat());
 
