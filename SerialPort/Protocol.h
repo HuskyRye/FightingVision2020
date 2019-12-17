@@ -31,10 +31,16 @@ private:
     SerialPort& serial_port_;
 };
 
-enum class EnemyColor : uchar { RED = 'a',
+enum class EnemyColor : uchar { RED,
     BLUE };
-enum class State : uchar { ARMOR_STATE = 'a',
+enum class State : uchar { ARMOR_STATE,
     RUNE_STATE };
+
+struct Target {
+    float yaw;
+    float pitch;
+    float distance;
+};
 
 struct McuData {
     EnemyColor enemy_color;

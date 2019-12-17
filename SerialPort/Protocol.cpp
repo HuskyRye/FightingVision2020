@@ -28,47 +28,30 @@ Protocol::~Protocol()
 
 void Protocol::sendTarget(cv::Point3f& target)
 {
-    union turn {
-        float d;
-        unsigned char data[4];
-    } t;
+    Target t { target.x, target.y, target.z };
     unsigned char uart_data[16];
     uart_data[0] = 0x03;
     uart_data[1] = 0xFC;
-    t.d = target.x;
-    uart_data[2] = t.data[0];
-    uart_data[3] = t.data[1];
-    uart_data[4] = t.data[2];
-    uart_data[5] = t.data[3];
-    t.d = target.y;
-    uart_data[6] = t.data[0];
-    uart_data[7] = t.data[1];
-    uart_data[8] = t.data[2];
-    uart_data[9] = t.data[3];
-    t.d = target.z;
-    uart_data[10] = t.data[0];
-    uart_data[11] = t.data[1];
-    uart_data[12] = t.data[2];
-    uart_data[13] = t.data[3];
+    memcpy(uart_data + 2, &t, sizeof(t));
     uart_data[14] = 0xFC;
     uart_data[15] = 0x03;
     serial_port_.Write(uart_data, 16);
 }
 
 McuData mcu_data = {
-    EnemyColor::BLUE, 
+    EnemyColor::BLUE,
     State::ARMOR_STATE
 };
 
 void Protocol::receiveData()
 {
-    uint8_t buffer[20];
+    uint8_t buffer[8];
     while (true) {
         memset(buffer, 0, sizeof(buffer));
-        serial_port_.Read(buffer, sizeof(buffer));
+        serial_port_.Read(buffer, sizeof(mcu_data) + 4);
         if (buffer[0] == '0x03' && buffer[1] == '0xFC'
-            && buffer[sizeof(mcu_data)] == '0x03'
-            && buffer[sizeof(mcu_data) - 1] == '0xFC')
+            && buffer[sizeof(mcu_data) + 2] == '0xFC'
+            && buffer[sizeof(mcu_data) + 3] == '0x03')
             memcpy(&mcu_data, buffer + 2, sizeof(mcu_data));
     }
 }
