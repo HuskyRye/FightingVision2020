@@ -58,6 +58,14 @@ int main(int argc, char* argv[])
     RuneDetector rune_detector;
     cv::Mat src;
     cv::Point3f target;
+
+    /* Video writer */
+    time_t currentTime = std::time(NULL);
+    char chCurrentTime[64];
+    std::strftime(chCurrentTime, sizeof(chCurrentTime), "%Y%m%d_%H%M", std::localtime(&currentTime));
+    std::string stCurrentTime = chCurrentTime;
+    cv::VideoWriter video_writer("/video/" + stCurrentTime + ".avi", cv::CAP_OPENCV_MJPEG, 210, cv::Size(1280, 1024), true);
+
     while (true) {
         if (capture->read(src)) {
             if ((mcu_data.state == State::ARMOR_STATE && armor_detector.DetectArmor(src, target))
@@ -65,6 +73,7 @@ int main(int argc, char* argv[])
                 protocol.sendTarget(target);
             // cv::imshow("src", src);
             // cv::waitKey(0);
+            // video_writer.write(src);
         } else
             break;
     }
