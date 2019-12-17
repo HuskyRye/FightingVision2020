@@ -49,7 +49,8 @@ int main(int argc, char* argv[])
         return 1;
     }
     Protocol protocol(serial_port);
-    std::thread receive(&Protocol::receiveData, protocol);
+    // std::thread receive(&Protocol::receiveData, protocol);
+    protocol.receiveData();
 
     /* ArmorDetector and RuneDetector */
     armorParam.LoadParam();
@@ -62,9 +63,9 @@ int main(int argc, char* argv[])
     /* Video writer */
     time_t currentTime = std::time(NULL);
     char chCurrentTime[64];
-    std::strftime(chCurrentTime, sizeof(chCurrentTime), "%Y%m%d_%H%M", std::localtime(&currentTime));
+    std::strftime(chCurrentTime, sizeof(chCurrentTime), "%Y%m%d%H%M", std::localtime(&currentTime));
     std::string stCurrentTime = chCurrentTime;
-    cv::VideoWriter video_writer("/video/" + stCurrentTime + ".avi", cv::CAP_OPENCV_MJPEG, 210, cv::Size(1280, 1024), true);
+    // cv::VideoWriter video_writer(stCurrentTime + ".avi", 0, 210, cv::Size(1280, 1024), true);
 
     while (true) {
         if (capture->read(src)) {

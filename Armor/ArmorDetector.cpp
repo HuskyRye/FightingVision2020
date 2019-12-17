@@ -58,9 +58,9 @@ cv::Mat ArmorDetector::DistillationColor(const cv::Mat& src)
     cv::split(src, bgr);
     cv::Mat result;
     if (mcu_data.enemy_color == EnemyColor::BLUE)
-        cv::subtract(bgr[0], bgr[2]*0.75, result);
+        cv::subtract(bgr[0], bgr[2], result);
     else
-        cv::subtract(bgr[2], bgr[0]*0.75, result);
+        cv::subtract(bgr[2], bgr[0], result);
     return result;
 }
 
@@ -81,9 +81,11 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
 
     cv::Mat binary_color_image;
     cv::Mat distillation = DistillationColor(src);
+
     float thresh = (mcu_data.enemy_color == EnemyColor::BLUE) ? armorParam.blue_thresh : armorParam.red_thresh;
     cv::threshold(distillation, binary_color_image, thresh, 255, cv::THRESH_BINARY);
-    cv::morphologyEx(binary_color_image, binary_color_image, cv::MORPH_CLOSE, cv::Mat());
+    // cv::morphologyEx(binary_color_image, binary_color_image, cv::MORPH_CLOSE, cv::Mat());
+    cv::dilate(binary_color_image, binary_color_image, cv::Mat());
 
     std::vector<std::vector<cv::Point>> contours_color;
     cv::findContours(binary_color_image, contours_color, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
@@ -106,6 +108,7 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
     if (enable_debug) {
         for (auto light : lights)
             DrawRotatedRect(show_lights, light, cv::Scalar(0, 255, 0), 2);
+        cv::imshow("distillation", distillation);
         cv::imshow("binary_brightness_image", binary_brightness_image);
         cv::imshow("binary_color_img", binary_color_image);
         cv::imshow("show_lights", show_lights);
