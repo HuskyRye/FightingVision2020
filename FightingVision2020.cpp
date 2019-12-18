@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 #ifdef Windows
     SerialPort serial_port("COM1");
 #elif defined Linux
-    SerialPort serial_port("/dev/ttyUSB0");
+    SerialPort serial_port("/dev/ttyS0");
 #endif
     if (!serial_port.Init()) {
         printf("Serial_port initialization failed.\n");
