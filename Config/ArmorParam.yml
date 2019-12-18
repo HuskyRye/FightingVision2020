@@ -1,6 +1,6 @@
 %YAML:1.0
 ---
-brightness_thresh: 200
+brightness_thresh: 250
 blue_thresh: 70
 red_thresh: 10
 light_min_area: 10
