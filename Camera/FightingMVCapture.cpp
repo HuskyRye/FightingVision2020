@@ -32,8 +32,10 @@ void grabbingCallback(CameraHandle hCamera, BYTE* pFrameBuffer, tSdkFrameHead* p
     FightingMVCapture* capture = (FightingMVCapture*)pContext;
     CameraSdkStatus status = CameraImageProcess(hCamera, pFrameBuffer, capture->m_pFrameBuffer, pFrameHead);
     if (status == CAMERA_STATUS_SUCCESS) {
-        // 由于SDK输出的数据默认是从底到顶的，转换为Opencv图片需要做一下垂直镜像
+#ifdef Windows
+        // Windows 输出的数据默认是从底到顶的，转换为Opencv图片需要做一下垂直镜像
         CameraFlipFrameBuffer(capture->m_pFrameBuffer, pFrameHead, 1);
+#endif
         cv::Mat matImage(cv::Size(pFrameHead->iWidth, pFrameHead->iHeight), CV_8UC3, capture->m_pFrameBuffer);
         capture->circular_queue.push(matImage.clone());
     }
@@ -72,6 +74,11 @@ bool FightingMVCapture::init()
     CameraReadSN(m_hCamera, (BYTE*)&fy, 2);
     cameraParam.fx = std::stod(fx);
     cameraParam.fy = std::stod(fy);
+
+#ifdef Linux
+    // Linux下默认输出RGB，设置输出为BGR
+    CameraSetIspOutFormat(m_hCamera, CAMERA_MEDIA_TYPE_BGR8);
+#endif
 
     // 注册回调函数
     CameraSetCallbackFunction(m_hCamera, grabbingCallback, this, nullptr);

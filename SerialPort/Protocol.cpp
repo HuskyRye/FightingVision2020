@@ -45,7 +45,7 @@ McuData mcu_data = {
 
 void Protocol::receiveData()
 {
-    uint8_t buffer[8];
+    uint8_t buffer[6];
     bool init = false;
     while (!init) {
         memset(buffer, 0, sizeof(buffer));
