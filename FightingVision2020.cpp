@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     }
     Protocol protocol(serial_port);
     // std::thread receive(&Protocol::receiveData, protocol);
-    protocol.receiveData();
+    // protocol.receiveData();
 
     /* ArmorDetector and RuneDetector */
     armorParam.LoadParam();
@@ -75,8 +75,10 @@ int main(int argc, char* argv[])
             // cv::imshow("src", src);
             // cv::waitKey(0);
             // video_writer.write(src);
-        } else
+        } else {
+            protocol.sendTarget(cv::Point3f(0, 0, -1));
             break;
+        }
     }
     return 0;
 }
