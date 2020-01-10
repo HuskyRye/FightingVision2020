@@ -20,7 +20,7 @@ set(SRC
     "FightingVision2020.cpp"
     "SerialPort/SerialPort.cpp"
     "SerialPort/Protocol.cpp"
-	"Camera/FightingMVCapture.cpp"
+    "Camera/FightingMVCapture.cpp"
     "Camera/FightingVideoCapture.cpp"
     "Camera/FightingUSBCapture.cpp"
     "Armor/ArmorDetector.cpp"
@@ -44,3 +44,4 @@ file(COPY "${PROJECT_SOURCE_DIR}/Config/CameraParam.yml" DESTINATION ${EXECUTABL
 file(COPY "${PROJECT_SOURCE_DIR}/Config/ArmorParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
 file(COPY "${PROJECT_SOURCE_DIR}/Config/RuneParam.yml" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
 file(COPY "${PROJECT_SOURCE_DIR}/Template/" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/)
+file(COPY "${PROJECT_SOURCE_DIR}/Config/MV-SUA134GC-Group0.config" DESTINATION ${EXECUTABLE_OUTPUT_PATH}/Camera/Configs/)

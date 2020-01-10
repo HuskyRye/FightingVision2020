@@ -55,7 +55,7 @@ bool FightingMVCapture::init()
     }
 
     // 初始化设备
-    if (CameraSdkStatus status = CameraInit(&sCameraList[0], -1, -1, &m_hCamera) != CAMERA_STATUS_SUCCESS) {
+    if (CameraSdkStatus status = CameraInit(&sCameraList[0], PARAM_MODE_BY_MODEL, -1, &m_hCamera) != CAMERA_STATUS_SUCCESS) {
         printf("Failed to init the camera! Error code is %d", status);
         printf(CameraGetErrorString(status));
         return false;
