@@ -69,16 +69,16 @@ int main(int argc, char* argv[])
 
     while (true) {
         if (capture->read(src)) {
-            if ((mcu_data.state == State::ARMOR_STATE && armor_detector.DetectArmor(src, target))
-                || (mcu_data.state == State::RUNE_STATE && rune_detector.DetectRune(src, target)))
-                protocol.sendTarget(target);
-            // cv::imshow("src", src);
-            // cv::waitKey(0);
-            // video_writer.write(src);
-        } else {
-            protocol.sendTarget(cv::Point3f(0, 0, -1));
-            break;
+            if (!((mcu_data.state == State::ARMOR_STATE && armor_detector.DetectArmor(src, target))
+                    || (mcu_data.state == State::RUNE_STATE && rune_detector.DetectRune(src, target))))
+                target = { 0, 0, -1 };
+            protocol.sendTarget(target);
         }
+        // cv::imshow("src", src);
+        // cv::waitKey(0);
+        // video_writer.write(src);
+        else
+            break;
     }
     return 0;
 }
