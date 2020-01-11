@@ -1,0 +1,13 @@
+[Unit]
+
+Description=...
+
+[Service]
+
+ExecStart=/bin/FightingVision2020.sh
+Restart=always
+Type=simple
+
+[Install]
+
+WantedBy = multi-user.target

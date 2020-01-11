@@ -1,4 +1,3 @@
 #!/bin/sh
-nvpmodel -m0
-/home/dji/jetson_clocks.sh
+cd /home/dji/FightingVision2020/build
 /home/dji/FightingVision2020/build/FightingVision2020
