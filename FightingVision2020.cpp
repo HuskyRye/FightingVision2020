@@ -17,17 +17,17 @@
 
 #include "FightingVision2020.h"
 
-int main(int argc, char* argv[])
+int FightingVision2020()
 {
     /* Video source */
     cameraParam.LoadParam();
     FightingCapture* capture;
     if (cameraParam.camera_type == "MindVision")
-        capture = new FightingMVCapture();
+        capture = &FightingMVCapture();
     else if (cameraParam.camera_type == "USB")
-        capture = new FightingUSBCapture(stoi(cameraParam.camera_name));
+        capture = &FightingUSBCapture(stoi(cameraParam.camera_name));
     else if (cameraParam.camera_type == "Video")
-        capture = new FightingVideoCapture(cameraParam.camera_name);
+        capture = &FightingVideoCapture(cameraParam.camera_name);
     else {
         printf("Invalid Camera Type: %s.\n", cameraParam.camera_type.c_str());
         return 1;
@@ -73,12 +73,21 @@ int main(int argc, char* argv[])
                     || (mcu_data.state == State::RUNE_STATE && rune_detector.DetectRune(src, target))))
                 target = { 0, 0, -1 };
             protocol.sendTarget(target);
-        }
-        // cv::imshow("src", src);
-        // cv::waitKey(0);
-        // video_writer.write(src);
-        else
+            // cv::imshow("src", src);
+            // cv::waitKey(0);
+            // video_writer.write(src);
+        } else
             break;
+    }
+    return 0;
+}
+
+int main(int argc, char* argv[])
+{
+    while (true) {
+        FightingVision2020();
+        printf("### Error, start again! ###\n\n");
+        cv::waitKey(2000);
     }
     return 0;
 }
