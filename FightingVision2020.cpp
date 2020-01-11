@@ -23,11 +23,11 @@ int FightingVision2020()
     cameraParam.LoadParam();
     FightingCapture* capture;
     if (cameraParam.camera_type == "MindVision")
-        capture = &FightingMVCapture();
+        capture = new FightingMVCapture();
     else if (cameraParam.camera_type == "USB")
-        capture = &FightingUSBCapture(stoi(cameraParam.camera_name));
+        capture = new FightingUSBCapture(stoi(cameraParam.camera_name));
     else if (cameraParam.camera_type == "Video")
-        capture = &FightingVideoCapture(cameraParam.camera_name);
+        capture = new FightingVideoCapture(cameraParam.camera_name);
     else {
         printf("Invalid Camera Type: %s.\n", cameraParam.camera_type.c_str());
         return 1;
