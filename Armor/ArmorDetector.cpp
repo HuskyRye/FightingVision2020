@@ -19,7 +19,7 @@
 
 ArmorDetector::ArmorDetector()
 {
-    enable_debug = true;
+    enable_debug = false;
     number_template.emplace_back(cv::Mat());
     for (int i = 1; i <= 8; ++i)
         number_template.emplace_back(cv::imread(std::to_string(i) + ".png", cv::IMREAD_GRAYSCALE));

@@ -67,8 +67,8 @@ bool FightingMVCapture::init()
     m_pFrameBuffer = (BYTE*)CameraAlignMalloc(sCameraInfo.sResolutionRange.iWidthMax * sCameraInfo.sResolutionRange.iWidthMax * 3, 16);
 
     // 初始化参数
-    cameraParam.resolution_height = sCameraInfo.sResolutionRange.iHeightMax;
-    cameraParam.resolution_width = sCameraInfo.sResolutionRange.iWidthMax;
+    cameraParam.resolution_height = 640;//sCameraInfo.sResolutionRange.iHeightMax;
+    cameraParam.resolution_width = 480;//sCameraInfo.sResolutionRange.iWidthMax;
     char fx[25], fy[25];
     CameraReadSN(m_hCamera, (BYTE*)&fx, 1);
     CameraReadSN(m_hCamera, (BYTE*)&fy, 2);

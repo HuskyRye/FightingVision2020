@@ -19,6 +19,20 @@
 
 int FightingVision2020()
 {
+    /* SerialPort */
+#ifdef Windows
+    SerialPort serial_port("COM1");
+#elif defined Linux
+    SerialPort serial_port("/dev/ttyS0");
+#endif
+    if (!serial_port.Init()) {
+        printf("Serial_port initialization failed.\n");
+        return 1;
+    }
+    Protocol protocol(serial_port);
+    // std::thread receive(&Protocol::receiveData, protocol);
+    // protocol.receiveData();
+
     /* Video source */
     cameraParam.LoadParam();
     FightingCapture* capture;
@@ -35,22 +49,9 @@ int FightingVision2020()
     printf("Camera name: %s\n", cameraParam.camera_name.c_str());
     if (capture && !capture->init()) {
         printf("Video source initialization failed.\n");
+        delete capture;
         return 1;
     }
-
-    /* SerialPort */
-#ifdef Windows
-    SerialPort serial_port("COM1");
-#elif defined Linux
-    SerialPort serial_port("/dev/ttyS0");
-#endif
-    if (!serial_port.Init()) {
-        printf("Serial_port initialization failed.\n");
-        return 1;
-    }
-    Protocol protocol(serial_port);
-    // std::thread receive(&Protocol::receiveData, protocol);
-    // protocol.receiveData();
 
     /* ArmorDetector and RuneDetector */
     armorParam.LoadParam();
@@ -79,6 +80,7 @@ int FightingVision2020()
         } else
             break;
     }
+    delete capture;
     return 0;
 }
 
