@@ -19,7 +19,7 @@
 
 ArmorDetector::ArmorDetector()
 {
-    enable_debug = false;
+    enable_debug = true;
     number_template.emplace_back(cv::Mat());
     for (int i = 1; i <= 8; ++i)
         number_template.emplace_back(cv::imread(std::to_string(i) + ".png", cv::IMREAD_GRAYSCALE));
@@ -35,6 +35,7 @@ bool ArmorDetector::DetectArmor(cv::Mat& src, cv::Point3f& target)
         show_lights = src.clone();
         show_armors = src.clone();
         show_final_armor = src.clone();
+        cv::imshow("src", src);
         auto c = cv::waitKey(1);
         if (c == 'a')
             cv::waitKey();
@@ -104,7 +105,7 @@ void ArmorDetector::DetectLights(const cv::Mat& src, std::vector<cv::RotatedRect
                 break;
             }
         }
-    }
+    } 
     if (enable_debug) {
         for (auto light : lights)
             DrawRotatedRect(show_lights, light, cv::Scalar(0, 255, 0), 2);
@@ -200,7 +201,7 @@ int ArmorDetector::DetectNumber(const cv::Mat& perspective)
         result[i] = cv::countNonZero(dst);
         // cv::imshow("abs_diff" + std::to_string(i), dst);
     }
-    return std::distance(result, std::min_element(result + 1, result + 8));
+    return std::distance(result, std::min_element(result + 1, result + 9));
 }
 
 std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, std::vector<std::vector<cv::Point2f>>& armors)
@@ -216,11 +217,13 @@ std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, st
         armors_level[i] = number_level[DetectNumber(perspective)];
         // std::cout << "\nnumber = " << min_result_index + 1;
         // std::cout << ", level = " << armors_level[i];
-        if (enable_debug)
-            cv::imshow("perspective", perspective);
     }
     int max_level_index = std::distance(armors_level.begin(), std::max_element(armors_level.begin(), armors_level.end()));
     if (enable_debug) {
+        cv::Mat perspective;
+        cv::Mat homography = cv::findHomography(armors[max_level_index], armor_points, cv::RANSAC);
+        cv::warpPerspective(gray, perspective, homography, cv::Size(armorParam.small_armor_width, armorParam.armor_height));
+        cv::imshow("perspective", perspective);
         DrawArmor(show_final_armor, armors[max_level_index], cv::Scalar(0, 255, 0), 2);
         cv::imshow("show_final_armor", show_final_armor);
     }
@@ -229,6 +232,7 @@ std::vector<cv::Point2f>& ArmorDetector::SelectFinalArmor(const cv::Mat& src, st
 
 void ArmorDetector::CalcControlInfo(const std::vector<cv::Point2f>& armor, cv::Point3f& target)
 {
+    return;
     static float half_camera_width = cameraParam.resolution_width / 2;
     static float half_camera_height = cameraParam.resolution_height / 2;
     static float camera_fx = cameraParam.fx;

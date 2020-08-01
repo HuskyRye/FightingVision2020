@@ -1,14 +1,14 @@
 %YAML:1.0
 ---
-brightness_thresh: 220
+brightness_thresh: 170
 blue_thresh: 70
-red_thresh: 5
-light_min_area: 10
-armor_max_angle_diff: 30
-armor_max_aspect_ratio: 6
+red_thresh: 70
+light_min_area: 20
+armor_max_angle_diff: 15
+armor_max_aspect_ratio: 5
 armor_max_height_ratio: 2
 small_armor_width: 125
 big_armor_width: 217
 armor_height: 125
 shift_scale: 7.5000000000000000e-01
-number_thresh: 10
+number_thresh: 100

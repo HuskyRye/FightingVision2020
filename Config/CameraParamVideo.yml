@@ -1,7 +1,7 @@
 %YAML:1.0
 ---
 camera_type: Video
-camera_name: "D:/大学/RoboMaster/Video/number.mp4"
+camera_name: "D:/大学/RoboMaster/RM2019能量机关视频/blue_light.avi"
 camera_matrix: !!opencv-matrix
    rows: 3
    cols: 3
